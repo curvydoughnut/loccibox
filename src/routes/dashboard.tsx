@@ -154,6 +154,90 @@ function Page() {
           </div>
         </div>
 
+        {/* Team Workspaces */}
+        <div className="space-y-4 animate-fade-up" style={{ animationDelay: "350ms" }}>
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-gradient-purple-pink flex items-center justify-center shadow-lg">
+                  <Users className="w-4 h-4 text-white" />
+                </div>
+                <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight">Team Workspaces</h2>
+              </div>
+              <p className="text-sm text-white/60 mt-2">Collaborate live in shared sandboxes — code, run, and ship together.</p>
+            </div>
+            <Button
+              onClick={() => toast.success("Team sandbox created — invites sent")}
+              className="bg-gradient-primary text-white hover:opacity-90 shadow-primary self-start sm:self-auto"
+            >
+              <Plus className="w-4 h-4 mr-2" /> New Team Sandbox
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+            {teamSandboxes.map((sb) => {
+              const Icon = sb.icon;
+              return (
+                <Link
+                  key={sb.id}
+                  to="/playground"
+                  className="glass glass-hover rounded-2xl p-5 flex flex-col gap-4 group"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shrink-0", sb.gradient)}>
+                      <Icon className="w-5 h-5 text-white" />
+                    </div>
+                    {sb.status === "live" && (
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-success/15 text-success text-[10px] font-bold uppercase tracking-wider border border-success/30">
+                        <span className="relative flex w-1.5 h-1.5">
+                          <span className="absolute inset-0 rounded-full bg-success opacity-75 animate-ping" />
+                          <span className="relative w-1.5 h-1.5 rounded-full bg-success" />
+                        </span>
+                        Live
+                      </span>
+                    )}
+                    {sb.status === "idle" && (
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-white/5 text-white/60 text-[10px] font-bold uppercase tracking-wider border border-white/10">
+                        <Circle className="w-1.5 h-1.5 fill-current" /> Idle
+                      </span>
+                    )}
+                    {sb.status === "private" && (
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-white/5 text-white/60 text-[10px] font-bold uppercase tracking-wider border border-white/10">
+                        <Lock className="w-2.5 h-2.5" /> Private
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="min-w-0">
+                    <div className="font-semibold truncate group-hover:text-white">{sb.name}</div>
+                    <div className="text-xs text-white/50 mt-0.5">{sb.lang} · {sb.updated}</div>
+                  </div>
+
+                  <div className="flex items-center justify-between mt-auto">
+                    <div className="flex -space-x-2">
+                      {sb.members.slice(0, 4).map((m, i) => (
+                        <div
+                          key={i}
+                          className={cn("w-7 h-7 rounded-full ring-2 ring-[#0a1929] flex items-center justify-center text-[10px] font-bold text-white", m.color)}
+                          title={m.name}
+                        >
+                          {m.name}
+                        </div>
+                      ))}
+                      {sb.members.length > 4 && (
+                        <div className="w-7 h-7 rounded-full ring-2 ring-[#0a1929] bg-white/10 flex items-center justify-center text-[10px] font-bold text-white/70">
+                          +{sb.members.length - 4}
+                        </div>
+                      )}
+                    </div>
+                    <span className="text-xs text-white/50 group-hover:text-white transition-colors">Open →</span>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="glass rounded-2xl overflow-hidden animate-fade-up" style={{ animationDelay: "400ms" }}>
           <div className="p-4 sm:p-6 border-b border-white/10">
             <h2 className="text-lg font-bold">Recent Activity</h2>
