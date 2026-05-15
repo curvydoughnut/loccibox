@@ -1,8 +1,11 @@
 import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { AppLayout } from "@/components/AppLayout";
 import { useAuth } from "@/lib/auth";
-import { Activity, Server, Clock, BarChart3, Check, X, Loader2, TrendingUp } from "lucide-react";
+import { Activity, Server, Clock, BarChart3, Check, X, Loader2, TrendingUp, Users, Plus, Circle, Code2, FlaskConical, Lock } from "lucide-react";
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart, CartesianGrid } from "recharts";
+import { Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/dashboard")({
@@ -33,6 +36,52 @@ const recent = [
   { time: "2:05 PM", lang: "Bash", status: "ok", dur: "31ms", tenant: "sk_live_a3f9..." },
   { time: "1:58 PM", lang: "Python", status: "fail", dur: "1240ms", tenant: "sk_live_c8d2..." },
   { time: "1:52 PM", lang: "Ruby", status: "ok", dur: "187ms", tenant: "sk_live_a3f9..." },
+];
+
+type TeamSandbox = {
+  id: string;
+  name: string;
+  lang: string;
+  status: "live" | "idle" | "private";
+  members: { name: string; color: string }[];
+  updated: string;
+  gradient: string;
+  icon: typeof Code2;
+};
+
+const teamSandboxes: TeamSandbox[] = [
+  {
+    id: "sb_1", name: "payment-webhook-tests", lang: "Python", status: "live",
+    members: [
+      { name: "AC", color: "bg-gradient-cyan-blue" },
+      { name: "JM", color: "bg-gradient-purple-pink" },
+      { name: "RS", color: "bg-gradient-teal-green" },
+    ],
+    updated: "editing now", gradient: "bg-gradient-cyan-blue", icon: Code2,
+  },
+  {
+    id: "sb_2", name: "auth-flow-integration", lang: "Node.js", status: "live",
+    members: [
+      { name: "MK", color: "bg-gradient-purple-pink" },
+      { name: "LT", color: "bg-gradient-amber-orange" },
+    ],
+    updated: "2 min ago", gradient: "bg-gradient-purple-pink", icon: FlaskConical,
+  },
+  {
+    id: "sb_3", name: "fibonacci-bench", lang: "Ruby", status: "idle",
+    members: [
+      { name: "DV", color: "bg-gradient-teal-green" },
+      { name: "AC", color: "bg-gradient-cyan-blue" },
+      { name: "PH", color: "bg-gradient-orange-red" },
+      { name: "EM", color: "bg-gradient-cyan-teal" },
+    ],
+    updated: "1 hour ago", gradient: "bg-gradient-teal-green", icon: Code2,
+  },
+  {
+    id: "sb_4", name: "ml-model-eval", lang: "Python", status: "private",
+    members: [{ name: "RS", color: "bg-gradient-teal-green" }],
+    updated: "yesterday", gradient: "bg-gradient-amber-orange", icon: Lock,
+  },
 ];
 
 function Page() {
