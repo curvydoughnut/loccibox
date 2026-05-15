@@ -41,45 +41,45 @@ function Page() {
 
   return (
     <AppLayout>
-      <div className="p-6 lg:p-10 space-y-8 max-w-7xl">
+      <div className="p-4 sm:p-6 lg:p-10 space-y-6 sm:space-y-8 max-w-7xl mx-auto w-full">
         <div className="animate-fade-up">
-          <h1 className="text-4xl font-extrabold tracking-tight">Dashboard</h1>
-          <p className="text-white/60 mt-2">Welcome back, {user.email.split("@")[0]} · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</p>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">Dashboard</h1>
+          <p className="text-sm sm:text-base text-white/60 mt-2">Welcome back, {user.email.split("@")[0]} · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {stats.map((s, i) => (
             <div
               key={s.label}
-              className="glass glass-hover rounded-2xl p-5 animate-fade-up"
+              className="glass glass-hover rounded-2xl p-4 sm:p-5 animate-fade-up"
               style={{ animationDelay: `${i * 70}ms` }}
             >
               <div className="flex items-start justify-between">
-                <div className={cn("w-11 h-11 rounded-xl flex items-center justify-center shadow-lg", s.gradient)}>
+                <div className={cn("w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shadow-lg", s.gradient)}>
                   <s.icon className="w-5 h-5 text-white" />
                 </div>
                 <div className="inline-flex items-center gap-1 text-xs text-success">
                   <TrendingUp className="w-3 h-3" />
                 </div>
               </div>
-              <div className="mt-4 text-xs uppercase tracking-wider text-white/50">{s.label}</div>
-              <div className="text-3xl font-extrabold mt-1 tracking-tight">{s.value}</div>
-              <div className="text-xs text-white/60 mt-1.5">{s.trend}</div>
+              <div className="mt-3 sm:mt-4 text-[10px] sm:text-xs uppercase tracking-wider text-white/50">{s.label}</div>
+              <div className="text-2xl sm:text-3xl font-extrabold mt-1 tracking-tight">{s.value}</div>
+              <div className="text-[11px] sm:text-xs text-white/60 mt-1">{s.trend}</div>
             </div>
           ))}
         </div>
 
-        <div className="hero-white p-7 animate-fade-up" style={{ animationDelay: "300ms" }}>
+        <div className="hero-white p-4 sm:p-7 animate-fade-up" style={{ animationDelay: "300ms" }}>
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h2 className="text-xl font-bold hero-text">Sandbox Runs</h2>
+              <h2 className="text-lg sm:text-xl font-bold hero-text">Sandbox Runs</h2>
               <p className="text-sm hero-text-muted mt-0.5">Last 7 days</p>
             </div>
             <div className="flex items-center gap-2 text-xs hero-text-muted">
               <span className="w-2 h-2 rounded-full bg-blue-500" /> Executions
             </div>
           </div>
-          <div className="h-72">
+          <div className="h-56 sm:h-72">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={chart} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
@@ -106,33 +106,33 @@ function Page() {
         </div>
 
         <div className="glass rounded-2xl overflow-hidden animate-fade-up" style={{ animationDelay: "400ms" }}>
-          <div className="p-6 border-b border-white/10">
+          <div className="p-4 sm:p-6 border-b border-white/10">
             <h2 className="text-lg font-bold">Recent Activity</h2>
             <p className="text-sm text-white/60">Last 10 sandbox executions</p>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm min-w-[640px]">
               <thead className="bg-white/5">
                 <tr className="text-left text-xs uppercase tracking-wider text-white/50">
-                  <th className="px-6 py-3 font-medium">Timestamp</th>
-                  <th className="px-6 py-3 font-medium">Language</th>
-                  <th className="px-6 py-3 font-medium">Status</th>
-                  <th className="px-6 py-3 font-medium">Duration</th>
-                  <th className="px-6 py-3 font-medium">Tenant</th>
+                  <th className="px-4 sm:px-6 py-3 font-medium">Timestamp</th>
+                  <th className="px-4 sm:px-6 py-3 font-medium">Language</th>
+                  <th className="px-4 sm:px-6 py-3 font-medium">Status</th>
+                  <th className="px-4 sm:px-6 py-3 font-medium">Duration</th>
+                  <th className="px-4 sm:px-6 py-3 font-medium">Tenant</th>
                 </tr>
               </thead>
               <tbody>
                 {recent.map((r, i) => (
                   <tr key={i} className="border-t border-white/5 hover:bg-white/5 transition-colors">
-                    <td className="px-6 py-3 text-white/70">{r.time} Today</td>
-                    <td className="px-6 py-3 font-medium">{r.lang}</td>
-                    <td className="px-6 py-3">
+                    <td className="px-4 sm:px-6 py-3 text-white/70 whitespace-nowrap">{r.time} Today</td>
+                    <td className="px-4 sm:px-6 py-3 font-medium">{r.lang}</td>
+                    <td className="px-4 sm:px-6 py-3">
                       {r.status === "ok" && <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-success/15 text-success text-xs"><Check className="w-3 h-3" /> Completed</span>}
                       {r.status === "fail" && <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-destructive/15 text-destructive text-xs"><X className="w-3 h-3" /> Failed</span>}
                       {r.status === "running" && <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-info/15 text-info text-xs"><Loader2 className="w-3 h-3 animate-spin" /> Running</span>}
                     </td>
-                    <td className="px-6 py-3 font-mono text-xs">{r.dur}</td>
-                    <td className="px-6 py-3 font-mono text-xs text-white/60">{r.tenant}</td>
+                    <td className="px-4 sm:px-6 py-3 font-mono text-xs">{r.dur}</td>
+                    <td className="px-4 sm:px-6 py-3 font-mono text-xs text-white/60">{r.tenant}</td>
                   </tr>
                 ))}
               </tbody>
