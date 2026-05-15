@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
-type User = { email: string; apiKey: string };
+type User = { email: string; apiKey: string; isDemo?: boolean; isEnterprise?: boolean; org?: string };
 type AuthCtx = {
   user: User | null;
-  login: (email: string) => void;
+  login: (email: string, opts?: { isDemo?: boolean; isEnterprise?: boolean; org?: string }) => void;
   logout: () => void;
 };
 
@@ -25,8 +25,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {}
   }, []);
 
-  const login = (email: string) => {
-    const u = { email, apiKey: makeKey() };
+  const login = (email: string, opts?: { isDemo?: boolean; isEnterprise?: boolean; org?: string }) => {
+    const u: User = { email, apiKey: makeKey(), ...opts };
     localStorage.setItem(KEY, JSON.stringify(u));
     setUser(u);
   };
