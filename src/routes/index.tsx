@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Boxes, Split, Shield, Lock, ArrowRight } from "lucide-react";
+import { Boxes, Split, Shield, Lock, ArrowRight, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
@@ -41,6 +41,12 @@ function Landing() {
     if (Object.keys(errs).length) return;
     login(email);
     toast.success("Welcome to SandboxAPI");
+    navigate({ to: "/dashboard" });
+  };
+
+  const enterDemo = () => {
+    login("demo@sandboxapi.dev");
+    toast.success("Demo mode activated");
     navigate({ to: "/dashboard" });
   };
 
@@ -87,6 +93,9 @@ function Landing() {
           <Button asChild size="lg" className="bg-gradient-primary text-white hover:opacity-90 text-base h-12 px-7 shadow-primary">
             <a href="#login">Get Started <ArrowRight className="w-4 h-4 ml-1" /></a>
           </Button>
+          <Button onClick={enterDemo} size="lg" variant="outline" className="ml-3 h-12 px-7 glass glass-hover border-white/20 text-white hover:text-white">
+            <Sparkles className="w-4 h-4 mr-1" /> Try Demo
+          </Button>
         </div>
 
         <div id="login" className="hero-white p-10 animate-scale">
@@ -112,6 +121,9 @@ function Landing() {
               {errors.password && <p className="text-xs text-red-500">{errors.password}</p>}
             </div>
             <Button type="submit" className="w-full bg-gradient-primary text-white hover:opacity-90 h-11 shadow-primary">Sign In</Button>
+            <Button type="button" onClick={enterDemo} variant="outline" className="w-full h-11 border-slate-200 hero-text hover:bg-slate-50">
+              <Sparkles className="w-4 h-4 mr-2" /> Continue in Demo Mode
+            </Button>
             <p className="text-xs text-center hero-text-muted">
               Don't have an account? <Link to="/" className="text-blue-600 hover:underline font-medium">Sign up</Link>
             </p>
