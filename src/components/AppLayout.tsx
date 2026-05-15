@@ -1,14 +1,15 @@
 import { ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Code2, KeyRound, BookOpen, LogOut, Boxes, Bell, Github, Twitter } from "lucide-react";
+import { LayoutDashboard, Code2, KeyRound, BookOpen, LogOut, Boxes, Bell, Github, Twitter, FileCode2, Sparkles, Building2, Split } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, gradient: "bg-gradient-cyan-blue" },
-  { to: "/playground", label: "Playground", icon: Code2, gradient: "bg-gradient-purple-pink" },
-  { to: "/keys", label: "API Keys", icon: KeyRound, gradient: "bg-gradient-cyan-teal" },
+  { to: "/code", label: "Code Editor", icon: FileCode2, gradient: "bg-gradient-cyan-teal" },
+  { to: "/playground", label: "Playground", icon: Split, gradient: "bg-gradient-purple-pink" },
+  { to: "/keys", label: "API Keys", icon: KeyRound, gradient: "bg-gradient-teal-green" },
   { to: "/docs", label: "Docs", icon: BookOpen, gradient: "bg-gradient-amber-orange" },
 ];
 
@@ -21,6 +22,28 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col w-full">
+      {/* Demo / Enterprise mode banner */}
+      {(user?.isDemo || user?.isEnterprise) && (
+        <div className={cn(
+          "px-4 sm:px-6 lg:px-10 py-2 flex items-center justify-center gap-2 text-xs font-medium",
+          user?.isDemo
+            ? "bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-amber-500/20 text-white border-b border-white/10"
+            : "bg-gradient-to-r from-blue-500/20 via-indigo-500/20 to-cyan-500/20 text-white border-b border-white/10"
+        )}>
+          {user?.isDemo ? (
+            <>
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <span><span className="font-bold">Demo Mode</span> — every feature unlocked, sample data, no signup needed.</span>
+            </>
+          ) : (
+            <>
+              <Building2 className="w-3.5 h-3.5 text-cyan" />
+              <span>Signed in via <span className="font-bold uppercase">{user?.org}</span> SSO · audit logs enabled</span>
+            </>
+          )}
+        </div>
+      )}
+
       {/* Header */}
       <header className="h-16 sm:h-20 sticky top-0 z-50 px-3 sm:px-6 lg:px-10 flex items-center justify-between gap-2 glass-strong border-x-0 border-t-0">
         <Link to="/dashboard" className="flex items-center gap-2 sm:gap-3 group min-w-0">

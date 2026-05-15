@@ -4,7 +4,8 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Boxes, Split, Shield, Lock, ArrowRight, Sparkles } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Boxes, Split, Shield, Lock, ArrowRight, Sparkles, Building2, KeyRound } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
@@ -29,6 +30,9 @@ function Landing() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [orgDomain, setOrgDomain] = useState("");
+  const [ssoEmail, setSsoEmail] = useState("");
+  const [ssoErrors, setSsoErrors] = useState<{ orgDomain?: string; ssoEmail?: string }>({});
 
   useEffect(() => { if (user) navigate({ to: "/dashboard" }); }, [user, navigate]);
 
@@ -45,9 +49,24 @@ function Landing() {
   };
 
   const enterDemo = () => {
-    login("demo@sandboxapi.dev");
+    login("demo@sandboxapi.dev", { isDemo: true });
     toast.success("Demo mode activated");
     navigate({ to: "/dashboard" });
+  };
+
+  const submitSso = (e: React.FormEvent) => {
+    e.preventDefault();
+    const errs: typeof ssoErrors = {};
+    if (!/^[a-z0-9-]+\.[a-z]{2,}$/i.test(orgDomain)) errs.orgDomain = "Enter your company domain (e.g. acme.com)";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ssoEmail)) errs.ssoEmail = "Enter your work email";
+    setSsoErrors(errs);
+    if (Object.keys(errs).length) return;
+    const org = orgDomain.split(".")[0];
+    toast.success(`Redirecting to ${org}'s identity provider…`);
+    setTimeout(() => {
+      login(ssoEmail, { isEnterprise: true, org });
+      navigate({ to: "/dashboard" });
+    }, 700);
   };
 
   return (
@@ -102,34 +121,94 @@ function Landing() {
 
         <div id="login" className="hero-white p-6 sm:p-8 lg:p-10 animate-scale">
           <h2 className="text-2xl font-bold tracking-tight hero-text">Sign in to your workspace</h2>
-          <p className="text-sm hero-text-muted mt-1">Demo mode — any valid credentials work.</p>
-          <form onSubmit={submit} className="mt-7 space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="hero-text font-medium">Email</Label>
-              <Input
-                id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@company.com"
-                className="bg-white border-slate-200 hero-text placeholder:text-slate-400 focus-visible:ring-blue-500"
-              />
-              {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password" className="hero-text font-medium">Password</Label>
-              <Input
-                id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="bg-white border-slate-200 hero-text placeholder:text-slate-400 focus-visible:ring-blue-500"
-              />
-              {errors.password && <p className="text-xs text-red-500">{errors.password}</p>}
-            </div>
-            <Button type="submit" className="w-full bg-gradient-primary text-white hover:opacity-90 h-11 shadow-primary">Sign In</Button>
-            <Button type="button" onClick={enterDemo} variant="outline" className="w-full h-11 border-slate-200 hero-text hover:bg-slate-50">
-              <Sparkles className="w-4 h-4 mr-2" /> Continue in Demo Mode
-            </Button>
-            <p className="text-xs text-center hero-text-muted">
-              Don't have an account? <Link to="/" className="text-blue-600 hover:underline font-medium">Sign up</Link>
-            </p>
-          </form>
+          <p className="text-sm hero-text-muted mt-1">Use email or your company SSO — or skip ahead with the demo.</p>
+
+          <Tabs defaultValue="email" className="mt-6">
+            <TabsList className="grid grid-cols-2 w-full bg-slate-100">
+              <TabsTrigger value="email" className="data-[state=active]:bg-white data-[state=active]:hero-text">
+                <KeyRound className="w-3.5 h-3.5 mr-1.5" /> Email
+              </TabsTrigger>
+              <TabsTrigger value="sso" className="data-[state=active]:bg-white data-[state=active]:hero-text">
+                <Building2 className="w-3.5 h-3.5 mr-1.5" /> Enterprise SSO
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="email" className="mt-5">
+              <form onSubmit={submit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="hero-text font-medium">Email</Label>
+                  <Input
+                    id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@company.com" maxLength={255}
+                    className="bg-white border-slate-200 hero-text placeholder:text-slate-400 focus-visible:ring-blue-500"
+                  />
+                  {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="hero-text font-medium">Password</Label>
+                  <Input
+                    id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••" maxLength={128}
+                    className="bg-white border-slate-200 hero-text placeholder:text-slate-400 focus-visible:ring-blue-500"
+                  />
+                  {errors.password && <p className="text-xs text-red-500">{errors.password}</p>}
+                </div>
+                <Button type="submit" className="w-full bg-gradient-primary text-white hover:opacity-90 h-11 shadow-primary">Sign In</Button>
+              </form>
+            </TabsContent>
+
+            <TabsContent value="sso" className="mt-5">
+              <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 mb-4 flex items-start gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shrink-0">
+                  <Shield className="w-4 h-4 text-white" />
+                </div>
+                <div className="text-xs hero-text-muted leading-relaxed">
+                  SAML 2.0 · Okta · Azure AD · Google Workspace · SCIM provisioning · audit logs included.
+                </div>
+              </div>
+              <form onSubmit={submitSso} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="org" className="hero-text font-medium">Company Domain</Label>
+                  <div className="flex">
+                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-slate-200 bg-slate-50 text-xs hero-text-muted font-mono">https://</span>
+                    <Input
+                      id="org" value={orgDomain} onChange={(e) => setOrgDomain(e.target.value.toLowerCase().trim())}
+                      placeholder="acme.com" maxLength={120}
+                      className="bg-white border-slate-200 hero-text placeholder:text-slate-400 focus-visible:ring-blue-500 rounded-l-none"
+                    />
+                  </div>
+                  {ssoErrors.orgDomain && <p className="text-xs text-red-500">{ssoErrors.orgDomain}</p>}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="sso-email" className="hero-text font-medium">Work Email</Label>
+                  <Input
+                    id="sso-email" type="email" value={ssoEmail} onChange={(e) => setSsoEmail(e.target.value)}
+                    placeholder="you@acme.com" maxLength={255}
+                    className="bg-white border-slate-200 hero-text placeholder:text-slate-400 focus-visible:ring-blue-500"
+                  />
+                  {ssoErrors.ssoEmail && <p className="text-xs text-red-500">{ssoErrors.ssoEmail}</p>}
+                </div>
+                <Button type="submit" className="w-full bg-gradient-primary text-white hover:opacity-90 h-11 shadow-primary">
+                  <Building2 className="w-4 h-4 mr-2" /> Continue with SSO
+                </Button>
+                <p className="text-[11px] text-center hero-text-muted">
+                  Need to set up SSO? <a href="#" className="text-blue-600 hover:underline font-medium">Talk to sales</a>
+                </p>
+              </form>
+            </TabsContent>
+          </Tabs>
+
+          <div className="relative my-5">
+            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200" /></div>
+            <div className="relative flex justify-center"><span className="bg-white px-3 text-[11px] uppercase tracking-wider hero-text-muted font-semibold">or</span></div>
+          </div>
+
+          <Button type="button" onClick={enterDemo} variant="outline" className="w-full h-11 border-slate-200 hero-text hover:bg-slate-50">
+            <Sparkles className="w-4 h-4 mr-2" /> Explore in Demo Mode
+          </Button>
+          <p className="text-[11px] text-center hero-text-muted mt-3">
+            Demo opens every feature with sample data — no signup required.
+          </p>
         </div>
       </section>
     </div>
