@@ -52,33 +52,33 @@ function Landing() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="h-20 px-6 lg:px-10 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-primary">
+      <header className="h-16 sm:h-20 px-4 sm:px-6 lg:px-10 flex items-center justify-between">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-primary">
             <Boxes className="w-5 h-5 text-white" />
           </div>
-          <span className="font-bold tracking-tight text-lg">SandboxAPI</span>
+          <span className="font-bold tracking-tight text-base sm:text-lg">SandboxAPI</span>
         </div>
-        <Button asChild className="bg-gradient-primary hover:opacity-90 text-white shadow-primary">
+        <Button asChild size="sm" className="bg-gradient-primary hover:opacity-90 text-white shadow-primary">
           <a href="#login">Sign In</a>
         </Button>
       </header>
 
-      <section className="flex-1 max-w-7xl w-full mx-auto px-6 lg:px-10 py-16 grid lg:grid-cols-2 gap-16 items-center">
-        <div className="space-y-8 animate-fade-up">
+      <section className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-16 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        <div className="space-y-6 sm:space-y-8 animate-fade-up">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass text-xs">
             <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
             <span className="text-white/80">Live microVMs · sub-100ms cold start</span>
           </div>
-          <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight leading-[1.02]">
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight leading-[1.05]">
             Every agent <br />
             deserves its own <span className="text-gradient-primary">computer</span>
           </h1>
-          <p className="text-xl text-white/70 font-light max-w-xl leading-relaxed">
+          <p className="text-base sm:text-xl text-white/70 font-light max-w-xl leading-relaxed">
             Hardware-isolated microVMs for safe code execution. Built for AI agents that write, test, and ship code at scale.
           </p>
 
-          <div className="grid sm:grid-cols-3 gap-3 pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
             {features.map((f) => (
               <div key={f.title} className="glass glass-hover p-4 rounded-xl">
                 <div className={`w-10 h-10 rounded-lg ${f.gradient} flex items-center justify-center mb-3 shadow-lg`}>
@@ -90,15 +90,17 @@ function Landing() {
             ))}
           </div>
 
-          <Button asChild size="lg" className="bg-gradient-primary text-white hover:opacity-90 text-base h-12 px-7 shadow-primary">
-            <a href="#login">Get Started <ArrowRight className="w-4 h-4 ml-1" /></a>
-          </Button>
-          <Button onClick={enterDemo} size="lg" variant="outline" className="ml-3 h-12 px-7 glass glass-hover border-white/20 text-white hover:text-white">
-            <Sparkles className="w-4 h-4 mr-1" /> Try Demo
-          </Button>
+          <div className="flex flex-wrap gap-3">
+            <Button asChild size="lg" className="bg-gradient-primary text-white hover:opacity-90 text-base h-12 px-7 shadow-primary">
+              <a href="#login">Get Started <ArrowRight className="w-4 h-4 ml-1" /></a>
+            </Button>
+            <Button onClick={enterDemo} size="lg" variant="outline" className="h-12 px-7 glass glass-hover border-white/20 text-white hover:text-white">
+              <Sparkles className="w-4 h-4 mr-1" /> Try Demo
+            </Button>
+          </div>
         </div>
 
-        <div id="login" className="hero-white p-10 animate-scale">
+        <div id="login" className="hero-white p-6 sm:p-8 lg:p-10 animate-scale">
           <h2 className="text-2xl font-bold tracking-tight hero-text">Sign in to your workspace</h2>
           <p className="text-sm hero-text-muted mt-1">Demo mode — any valid credentials work.</p>
           <form onSubmit={submit} className="mt-7 space-y-4">
