@@ -5,7 +5,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Play, RotateCcw, Check, AlertTriangle, Loader2, Clock } from "lucide-react";
+import { Play, RotateCcw, Check, AlertTriangle, Loader2, Clock, Code2, FlaskConical } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/playground")({
@@ -54,8 +54,7 @@ assert add(0, 0) == 0
 
 print("✓ All tests passed!")
 `,
-  node: `// The add function is imported and available
-console.assert(add(2, 3) === 5);
+  node: `console.assert(add(2, 3) === 5);
 console.assert(add(-1, -2) === -3);
 console.assert(add(0, 0) === 0);
 
@@ -78,17 +77,26 @@ puts "✓ All tests passed!"
 type SyncState = "synced" | "syncing" | "failed";
 type RunState = "idle" | "running" | "passed" | "failed";
 
-function defineDarkTheme(monaco: any) {
-  monaco.editor.defineTheme("sandbox-dark", {
-    base: "vs-dark",
+function defineLightTheme(monaco: any) {
+  monaco.editor.defineTheme("sandbox-light", {
+    base: "vs",
     inherit: true,
-    rules: [],
+    rules: [
+      { token: "comment", foreground: "94a3b8", fontStyle: "italic" },
+      { token: "keyword", foreground: "8b5cf6", fontStyle: "bold" },
+      { token: "string", foreground: "10b981" },
+      { token: "number", foreground: "f59e0b" },
+      { token: "type", foreground: "06b6d4" },
+    ],
     colors: {
-      "editor.background": "#0f172a",
-      "editor.foreground": "#e2e8f0",
-      "editorLineNumber.foreground": "#475569",
-      "editor.lineHighlightBackground": "#1e293b",
-      "editorCursor.foreground": "#8b5cf6",
+      "editor.background": "#ffffff",
+      "editor.foreground": "#1e293b",
+      "editorLineNumber.foreground": "#cbd5e1",
+      "editorLineNumber.activeForeground": "#3b82f6",
+      "editor.lineHighlightBackground": "#f8fafc",
+      "editor.selectionBackground": "#dbeafe",
+      "editorCursor.foreground": "#3b82f6",
+      "editorIndentGuide.background": "#f1f5f9",
     },
   });
 }
@@ -115,7 +123,6 @@ function Page() {
     setRun("idle");
   };
 
-  // Debounced sync simulation
   useEffect(() => {
     setSync("syncing");
     if (syncTimer.current) clearTimeout(syncTimer.current);
@@ -128,20 +135,14 @@ function Page() {
     setRun("running");
     setOutput(null);
     const start = performance.now();
-
-    // Simulated execution. Replace with real backend call.
     await new Promise((r) => setTimeout(r, 600 + Math.random() * 400));
-
     const ms = Math.round(performance.now() - start);
     const failedHeuristic = /assert\s+False|raise\s+"|exit\s+1/.test(tests);
     const passed = Math.max(1, (tests.match(/assert|console\.assert|raise|\[/g) || []).length);
     const failed = failedHeuristic ? 1 : 0;
     const success = !failedHeuristic;
-
     setOutput({
-      stdout: success
-        ? "✓ All tests passed!\n"
-        : "Traceback (most recent call last):\n  AssertionError\n",
+      stdout: success ? "✓ All tests passed!\n" : "Traceback (most recent call last):\n  AssertionError\n",
       stderr: success ? "" : "AssertionError: test failed",
       exit: success ? 0 : 1,
       ms,
@@ -151,12 +152,8 @@ function Page() {
     setStats({ passed: success ? passed : Math.max(0, passed - 1), failed });
   };
 
-  const clear = () => {
-    setOutput(null);
-    setRun("idle");
-  };
+  const clear = () => { setOutput(null); setRun("idle"); };
 
-  // Cmd/Ctrl+Enter
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
@@ -170,13 +167,13 @@ function Page() {
 
   const SyncBadge = useMemo(() => {
     const conf = {
-      synced: { cls: "bg-success/15 text-success border-success/30", icon: Check, label: "In Sync" },
-      syncing: { cls: "bg-warning/15 text-warning border-warning/30", icon: Loader2, label: "Syncing..." },
-      failed: { cls: "bg-destructive/15 text-destructive border-destructive/30", icon: AlertTriangle, label: "Sync Failed" },
+      synced: { cls: "bg-emerald-50 text-emerald-600 border-emerald-200", icon: Check, label: "In Sync" },
+      syncing: { cls: "bg-amber-50 text-amber-600 border-amber-200", icon: Loader2, label: "Syncing..." },
+      failed: { cls: "bg-red-50 text-red-600 border-red-200", icon: AlertTriangle, label: "Sync Failed" },
     }[sync];
     const Icon = conf.icon;
     return (
-      <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs border", conf.cls)}>
+      <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border", conf.cls)}>
         <Icon className={cn("w-3 h-3", sync === "syncing" && "animate-spin")} />
         {conf.label}
       </span>
@@ -185,26 +182,27 @@ function Page() {
 
   const editorOptions = {
     fontSize: 13,
-    fontFamily: "Menlo, Monaco, 'Courier New', monospace",
+    fontFamily: "Monaco, 'Courier New', monospace",
     minimap: { enabled: false },
     tabSize: 2,
     wordWrap: "off" as const,
     scrollBeyondLastLine: false,
     automaticLayout: true,
-    padding: { top: 12, bottom: 12 },
+    padding: { top: 16, bottom: 16 },
+    renderLineHighlight: "all" as const,
   };
 
   return (
     <AppLayout>
-      <div className="p-6 space-y-4 h-[calc(100vh-4rem)] flex flex-col">
-        <div className="flex items-center justify-between">
+      <div className="p-6 lg:p-10 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 animate-fade-up">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Dual Sandbox Playground</h1>
-            <p className="text-sm text-muted-foreground">Two isolated microVMs — write on the left, test on the right.</p>
+            <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight">Dual Sandbox <span className="text-gradient-primary">Playground</span></h1>
+            <p className="text-white/60 mt-2">Two isolated microVMs — write on the left, test on the right.</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <Select value={lang} onValueChange={(v) => onLangChange(v as Lang)}>
-              <SelectTrigger className="w-40 bg-card"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-44 glass border-white/15 text-white"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="python">Python</SelectItem>
                 <SelectItem value="node">Node.js</SelectItem>
@@ -215,13 +213,18 @@ function Page() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 min-h-0">
-          {/* LEFT: code */}
-          <div className="rounded-xl border border-border bg-card flex flex-col overflow-hidden">
-            <div className="h-11 px-4 flex items-center justify-between border-b border-border bg-muted/20">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <span className="w-2 h-2 rounded-full bg-primary" />
-                Code
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-up" style={{ animationDelay: "100ms" }}>
+          {/* LEFT */}
+          <div className="hero-white overflow-hidden flex flex-col h-[680px]">
+            <div className="h-14 px-5 flex items-center justify-between border-b hero-divider">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-gradient-cyan-blue flex items-center justify-center shadow-sm">
+                  <Code2 className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <div className="text-sm font-semibold hero-text">Code</div>
+                  <div className="text-[11px] hero-text-muted">Source sandbox</div>
+                </div>
               </div>
               {SyncBadge}
             </div>
@@ -229,75 +232,79 @@ function Page() {
               <Editor
                 height="100%"
                 language={monacoLang[lang]}
-                theme="sandbox-dark"
+                theme="sandbox-light"
                 value={code}
                 onChange={(v) => setCode(v ?? "")}
-                beforeMount={defineDarkTheme}
+                beforeMount={defineLightTheme}
                 options={editorOptions}
               />
             </div>
           </div>
 
-          {/* RIGHT: tests + output */}
-          <div className="rounded-xl border border-border bg-card flex flex-col overflow-hidden">
-            <div className="h-11 px-4 flex items-center justify-between border-b border-border bg-muted/20">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <span className="w-2 h-2 rounded-full bg-purple" />
-                Test Code
-                <span className="text-xs text-muted-foreground font-normal ml-2">Write assertions to test your code</span>
+          {/* RIGHT */}
+          <div className="hero-white overflow-hidden flex flex-col h-[680px]">
+            <div className="h-14 px-5 flex items-center justify-between border-b hero-divider">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-gradient-purple-pink flex items-center justify-center shadow-sm">
+                  <FlaskConical className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <div className="text-sm font-semibold hero-text">Test Code</div>
+                  <div className="text-[11px] hero-text-muted">Write assertions to validate your code</div>
+                </div>
               </div>
               <RunBadge state={run} />
             </div>
             <div className="flex-1 min-h-0 grid grid-rows-[1.4fr_1fr]">
-              <div className="border-b border-border min-h-0">
+              <div className="border-b hero-divider min-h-0">
                 <Editor
                   height="100%"
                   language={monacoLang[lang]}
-                  theme="sandbox-dark"
+                  theme="sandbox-light"
                   value={tests}
                   onChange={(v) => setTests(v ?? "")}
-                  beforeMount={defineDarkTheme}
+                  beforeMount={defineLightTheme}
                   options={editorOptions}
                 />
               </div>
-              <div className="bg-background flex flex-col min-h-0">
-                <div className="px-4 py-2 border-b border-border flex items-center gap-3 text-xs">
-                  <span className="text-muted-foreground">Output</span>
+              <div className="hero-soft flex flex-col min-h-0">
+                <div className="px-5 py-2.5 border-b hero-divider flex items-center gap-3 text-xs">
+                  <span className="hero-text-muted font-medium">Output</span>
                   {output && (
                     <>
-                      <span className="text-success">✓ {stats.passed} passed</span>
-                      <span className="text-destructive">✗ {stats.failed} failed</span>
-                      <span className="text-muted-foreground inline-flex items-center gap-1"><Clock className="w-3 h-3" />{output.ms}ms</span>
+                      <span className="text-emerald-600 font-medium">✓ {stats.passed} passed</span>
+                      <span className="text-red-500 font-medium">✗ {stats.failed} failed</span>
+                      <span className="hero-text-muted inline-flex items-center gap-1"><Clock className="w-3 h-3" />{output.ms}ms</span>
                     </>
                   )}
                 </div>
-                <pre className="flex-1 min-h-0 overflow-auto p-4 font-mono text-xs leading-relaxed">
-                  {run === "running" && <span className="text-info">Running in sandbox...</span>}
+                <pre className="flex-1 min-h-0 overflow-auto p-5 font-mono text-xs leading-relaxed hero-text">
+                  {run === "running" && <span className="text-blue-500">Running in sandbox...</span>}
                   {output && (
                     <>
-                      {output.stdout && <span className="text-foreground">{output.stdout}</span>}
-                      {output.stderr && <span className="text-destructive">{output.stderr}</span>}
-                      <span className="text-muted-foreground">{"\n"}exit code: {output.exit} · duration: {output.ms}ms</span>
+                      {output.stdout && <span>{output.stdout}</span>}
+                      {output.stderr && <span className="text-red-500">{output.stderr}</span>}
+                      <span className="hero-text-muted">{"\n"}exit code: {output.exit} · duration: {output.ms}ms</span>
                     </>
                   )}
-                  {!output && run === "idle" && <span className="text-muted-foreground">Press Run Tests or Ctrl/Cmd+Enter to execute.</span>}
+                  {!output && run === "idle" && <span className="hero-text-muted">Press Run Tests or Ctrl/Cmd+Enter to execute.</span>}
                 </pre>
               </div>
             </div>
-            <div className="px-4 py-3 border-t border-border flex items-center gap-2 bg-muted/20">
+            <div className="px-5 py-3.5 border-t hero-divider flex items-center gap-2 hero-soft">
               <Button
                 onClick={runTests}
                 disabled={sync !== "synced" || run === "running" || !tests.trim()}
-                className="bg-gradient-brand text-primary-foreground hover:opacity-90 h-10"
+                className="bg-gradient-primary text-white hover:opacity-90 h-10 shadow-primary"
               >
                 {run === "running" ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2" />}
                 {run === "running" ? "Running..." : "Run Tests"}
               </Button>
-              <Button variant="ghost" onClick={clear} className="h-10">
+              <Button variant="ghost" onClick={clear} className="h-10 hero-text hover:bg-slate-100">
                 <RotateCcw className="w-4 h-4 mr-2" /> Clear
               </Button>
               <div className="flex-1" />
-              {lastMs !== null && <span className="text-xs text-muted-foreground">Last run: {lastMs}ms</span>}
+              {lastMs !== null && <span className="text-xs hero-text-muted">Last run: {lastMs}ms</span>}
             </div>
           </div>
         </div>
@@ -309,9 +316,9 @@ function Page() {
 function RunBadge({ state }: { state: RunState }) {
   if (state === "idle") return null;
   const conf = {
-    running: { cls: "bg-info/15 text-info border-info/30 animate-pulse", icon: Loader2, label: "RUNNING..." },
-    passed: { cls: "bg-success/15 text-success border-success/30", icon: Check, label: "PASSED" },
-    failed: { cls: "bg-destructive/15 text-destructive border-destructive/30", icon: AlertTriangle, label: "FAILED" },
+    running: { cls: "bg-blue-50 text-blue-600 border-blue-200 animate-pulse", icon: Loader2, label: "RUNNING" },
+    passed: { cls: "bg-emerald-50 text-emerald-600 border-emerald-200", icon: Check, label: "PASSED" },
+    failed: { cls: "bg-red-50 text-red-600 border-red-200", icon: AlertTriangle, label: "FAILED" },
   }[state];
   const Icon = conf.icon;
   return (
