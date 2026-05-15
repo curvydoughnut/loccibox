@@ -41,9 +41,10 @@ function Page() {
 
   return (
     <AppLayout>
-      <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] min-h-[calc(100vh-9rem)] gap-6 p-6 lg:p-10">
-        <aside className="glass rounded-2xl p-4 self-start lg:sticky lg:top-24 h-fit">
+      <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] min-h-[calc(100vh-9rem)] gap-4 sm:gap-6 p-4 sm:p-6 lg:p-10 max-w-[1400px] mx-auto w-full">
+        <aside className="glass rounded-2xl p-3 sm:p-4 self-start lg:sticky lg:top-24 h-fit overflow-x-auto">
           <div className="text-xs font-semibold uppercase tracking-wider text-white/50 px-2 py-2">Navigation</div>
+          <div className="flex lg:block gap-1.5 lg:gap-0">
           {sections.map((s) => {
             const Icon = s.icon;
             return (
@@ -51,22 +52,23 @@ function Page() {
                 key={s.id}
                 onClick={() => { setActive(s.id); document.getElementById(s.id)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
                 className={cn(
-                  "w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all group",
+                  "lg:w-full flex items-center gap-2 lg:gap-3 rounded-xl px-3 py-2 lg:py-2.5 text-xs lg:text-sm font-medium transition-all group whitespace-nowrap shrink-0",
                   active === s.id ? "bg-white/10 text-white" : "text-white/60 hover:bg-white/5 hover:text-white"
                 )}
               >
-                <span className={cn("w-8 h-8 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110", s.gradient)}>
+                <span className={cn("w-7 h-7 lg:w-8 lg:h-8 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110 shrink-0", s.gradient)}>
                   <Icon className="w-4 h-4 text-white" />
                 </span>
                 {s.label}
               </button>
             );
           })}
+          </div>
         </aside>
 
-        <div className="hero-white p-8 lg:p-12 space-y-14 max-w-none">
+        <div className="hero-white p-5 sm:p-8 lg:p-12 space-y-10 sm:space-y-14 max-w-none min-w-0">
           <section id="quickstart" className="space-y-4">
-            <h1 className="text-3xl font-extrabold tracking-tight hero-text">Quick Start</h1>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight hero-text">Quick Start</h1>
             <p className="hero-text-muted">Get a sandbox running in under a minute.</p>
             <h3 className="font-semibold mt-6 hero-text">Step 1 · Get your API Key</h3>
             <p className="text-sm hero-text-muted">Visit the API Keys page and click "Create New API Key". Save the key safely.</p>
