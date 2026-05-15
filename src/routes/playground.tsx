@@ -194,15 +194,15 @@ function Page() {
 
   return (
     <AppLayout>
-      <div className="p-6 lg:p-10 space-y-6">
+      <div className="p-4 sm:p-6 lg:p-10 space-y-6 max-w-[1600px] mx-auto w-full">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 animate-fade-up">
           <div>
-            <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight">Dual Sandbox <span className="text-gradient-primary">Playground</span></h1>
-            <p className="text-white/60 mt-2">Two isolated microVMs — write on the left, test on the right.</p>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">Dual Sandbox <span className="text-gradient-primary">Playground</span></h1>
+            <p className="text-sm sm:text-base text-white/60 mt-2">Two isolated microVMs — write on the left, test on the right.</p>
           </div>
           <div className="flex items-center gap-2">
             <Select value={lang} onValueChange={(v) => onLangChange(v as Lang)}>
-              <SelectTrigger className="w-44 glass border-white/15 text-white"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-full sm:w-44 glass border-white/15 text-white"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="python">Python</SelectItem>
                 <SelectItem value="node">Node.js</SelectItem>
@@ -213,10 +213,10 @@ function Page() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-up" style={{ animationDelay: "100ms" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 animate-fade-up" style={{ animationDelay: "100ms" }}>
           {/* LEFT */}
-          <div className="hero-white overflow-hidden flex flex-col h-[680px]">
-            <div className="h-14 px-5 flex items-center justify-between border-b hero-divider">
+          <div className="hero-white overflow-hidden flex flex-col h-[420px] sm:h-[520px] lg:h-[680px]">
+            <div className="h-14 px-3 sm:px-5 flex items-center justify-between gap-2 border-b hero-divider">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-gradient-cyan-blue flex items-center justify-center shadow-sm">
                   <Code2 className="w-4 h-4 text-white" />
@@ -242,8 +242,8 @@ function Page() {
           </div>
 
           {/* RIGHT */}
-          <div className="hero-white overflow-hidden flex flex-col h-[680px]">
-            <div className="h-14 px-5 flex items-center justify-between border-b hero-divider">
+          <div className="hero-white overflow-hidden flex flex-col h-[520px] sm:h-[600px] lg:h-[680px]">
+            <div className="h-14 px-3 sm:px-5 flex items-center justify-between gap-2 border-b hero-divider">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-gradient-purple-pink flex items-center justify-center shadow-sm">
                   <FlaskConical className="w-4 h-4 text-white" />
@@ -291,7 +291,7 @@ function Page() {
                 </pre>
               </div>
             </div>
-            <div className="px-5 py-3.5 border-t hero-divider flex items-center gap-2 hero-soft">
+            <div className="px-3 sm:px-5 py-3 border-t hero-divider flex flex-wrap items-center gap-2 hero-soft">
               <Button
                 onClick={runTests}
                 disabled={sync !== "synced" || run === "running" || !tests.trim()}
@@ -304,7 +304,7 @@ function Page() {
                 <RotateCcw className="w-4 h-4 mr-2" /> Clear
               </Button>
               <div className="flex-1" />
-              {lastMs !== null && <span className="text-xs hero-text-muted">Last run: {lastMs}ms</span>}
+              {lastMs !== null && <span className="text-xs hero-text-muted ml-auto">Last run: {lastMs}ms</span>}
             </div>
           </div>
         </div>

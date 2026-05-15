@@ -22,12 +22,12 @@ export function AppLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col w-full">
       {/* Header */}
-      <header className="h-20 sticky top-0 z-50 px-6 lg:px-10 flex items-center justify-between glass-strong border-x-0 border-t-0">
-        <Link to="/dashboard" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-primary transition-transform group-hover:scale-105">
+      <header className="h-16 sm:h-20 sticky top-0 z-50 px-3 sm:px-6 lg:px-10 flex items-center justify-between gap-2 glass-strong border-x-0 border-t-0">
+        <Link to="/dashboard" className="flex items-center gap-2 sm:gap-3 group min-w-0">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-primary transition-transform group-hover:scale-105 shrink-0">
             <Boxes className="w-5 h-5 text-white" />
           </div>
-          <span className="font-bold tracking-tight text-lg">SandboxAPI</span>
+          <span className="font-bold tracking-tight text-base sm:text-lg truncate">SandboxAPI</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
@@ -50,17 +50,17 @@ export function AppLayout({ children }: { children: ReactNode }) {
           })}
         </nav>
 
-        <div className="flex items-center gap-3">
-          <button className="relative w-10 h-10 rounded-full glass glass-hover flex items-center justify-center">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <button className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full glass glass-hover flex items-center justify-center">
             <Bell className="w-4 h-4 text-cyan" />
             <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-gradient-orange-red" />
           </button>
-          <div className="hidden sm:block text-right">
-            <div className="text-xs text-white/60">{user?.email}</div>
+          <div className="hidden md:block text-right max-w-[180px]">
+            <div className="text-xs text-white/60 truncate">{user?.email}</div>
           </div>
           <button
             onClick={handleLogout}
-            className="w-10 h-10 rounded-full bg-gradient-purple-pink flex items-center justify-center text-sm font-bold text-white shadow-primary hover:scale-105 transition-transform"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-purple-pink flex items-center justify-center text-sm font-bold text-white shadow-primary hover:scale-105 transition-transform shrink-0"
             title="Logout"
           >
             {user?.email?.[0]?.toUpperCase() ?? "U"}
@@ -68,9 +68,32 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </div>
       </header>
 
+      {/* Mobile nav strip */}
+      <nav className="lg:hidden sticky top-16 sm:top-20 z-40 glass border-x-0 border-t-0 px-3 py-2 flex items-center gap-1.5 overflow-x-auto">
+        {nav.map((n) => {
+          const active = path === n.to || path.startsWith(n.to + "/");
+          const Icon = n.icon;
+          return (
+            <Link
+              key={n.to}
+              to={n.to}
+              className={cn(
+                "flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-all shrink-0",
+                active ? "bg-white/10 text-white border border-white/15" : "text-white/60 hover:text-white hover:bg-white/5"
+              )}
+            >
+              <span className={cn("w-5 h-5 rounded-md flex items-center justify-center", n.gradient)}>
+                <Icon className="w-3 h-3 text-white" />
+              </span>
+              {n.label}
+            </Link>
+          );
+        })}
+      </nav>
+
       <div className="flex-1 flex w-full">
         {/* Sidebar */}
-        <aside className="hidden lg:flex w-64 flex-col glass border-y-0 border-l-0 sticky top-20 self-start h-[calc(100vh-5rem)]">
+        <aside className="hidden lg:flex w-64 shrink-0 flex-col glass border-y-0 border-l-0 sticky top-20 self-start h-[calc(100vh-5rem)]">
           <nav className="flex-1 p-4 space-y-1">
             {nav.map((n) => {
               const active = path === n.to || path.startsWith(n.to + "/");
@@ -106,7 +129,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       </div>
 
       {/* Footer */}
-      <footer className="h-16 px-6 lg:px-10 flex items-center justify-between glass border-x-0 border-b-0 text-xs">
+      <footer className="px-4 sm:px-6 lg:px-10 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 glass border-x-0 border-b-0 text-xs">
         <div className="text-white/50">© SandboxAPI 2026</div>
         <div className="flex items-center gap-2 text-white/70">
           <span className="w-2 h-2 rounded-full bg-success animate-pulse" />

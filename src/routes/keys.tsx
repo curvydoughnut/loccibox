@@ -76,33 +76,34 @@ function Page() {
 
   return (
     <AppLayout>
-      <div className="p-6 lg:p-10 space-y-6 max-w-7xl">
-        <div className="flex items-center justify-between animate-fade-up">
+      <div className="p-4 sm:p-6 lg:p-10 space-y-6 max-w-7xl mx-auto w-full">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-up">
           <div>
-            <h1 className="text-4xl font-extrabold tracking-tight">API Keys</h1>
-            <p className="text-white/60 mt-2">Manage your API keys, rate limits, and concurrent sandbox limits.</p>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">API Keys</h1>
+            <p className="text-sm sm:text-base text-white/60 mt-2">Manage your API keys, rate limits, and concurrent sandbox limits.</p>
           </div>
-          <Button onClick={() => setOpen(true)} className="bg-gradient-primary text-white hover:opacity-90 h-11 px-5 shadow-primary">
+          <Button onClick={() => setOpen(true)} className="bg-gradient-primary text-white hover:opacity-90 h-11 px-5 shadow-primary self-start sm:self-auto">
             <Plus className="w-4 h-4 mr-2" /> Create New Key
           </Button>
         </div>
 
         <div className="glass rounded-2xl overflow-hidden animate-fade-up" style={{ animationDelay: "100ms" }}>
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[760px]">
             <thead className="bg-white/5">
               <tr className="text-left text-xs uppercase tracking-wider text-white/50">
-                <th className="px-6 py-4 font-medium">Key Name</th>
-                <th className="px-6 py-4 font-medium">Created</th>
-                <th className="px-6 py-4 font-medium">Last Used</th>
-                <th className="px-6 py-4 font-medium">Status</th>
-                <th className="px-6 py-4 font-medium">Rate Limit</th>
-                <th className="px-6 py-4 font-medium text-right">Actions</th>
+                <th className="px-4 sm:px-6 py-4 font-medium">Key Name</th>
+                <th className="px-4 sm:px-6 py-4 font-medium">Created</th>
+                <th className="px-4 sm:px-6 py-4 font-medium">Last Used</th>
+                <th className="px-4 sm:px-6 py-4 font-medium">Status</th>
+                <th className="px-4 sm:px-6 py-4 font-medium">Rate Limit</th>
+                <th className="px-4 sm:px-6 py-4 font-medium text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
               {keys.map((k) => (
                 <tr key={k.id} className="border-t border-white/5 hover:bg-white/5 transition-colors">
-                  <td className="px-6 py-4">
+                  <td className="px-4 sm:px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-lg bg-gradient-cyan-teal flex items-center justify-center shadow-sm">
                         <KeyRound className="w-4 h-4 text-white" />
@@ -113,9 +114,9 @@ function Page() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-white/70">{k.created}</td>
-                  <td className="px-6 py-4 text-white/70">{k.lastUsed}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 sm:px-6 py-4 text-white/70 whitespace-nowrap">{k.created}</td>
+                  <td className="px-4 sm:px-6 py-4 text-white/70 whitespace-nowrap">{k.lastUsed}</td>
+                  <td className="px-4 sm:px-6 py-4">
                     <span className={cn(
                       "inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium border",
                       k.status === "active" ? "bg-success/15 text-success border-success/30" : "bg-white/5 text-white/50 border-white/10"
@@ -123,8 +124,8 @@ function Page() {
                       {k.status === "active" ? "Active" : "Revoked"}
                     </span>
                   </td>
-                  <td className="px-6 py-4 font-mono text-xs">{k.rateLimit ? `${k.rateLimit}/min` : "Unlimited"}</td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-4 sm:px-6 py-4 font-mono text-xs whitespace-nowrap">{k.rateLimit ? `${k.rateLimit}/min` : "Unlimited"}</td>
+                  <td className="px-4 sm:px-6 py-4 text-right">
                     <div className="inline-flex gap-1">
                       <Button size="sm" variant="ghost" className="hover:bg-white/10 text-white/80" onClick={() => copy(k.key)}><Copy className="w-3.5 h-3.5" /></Button>
                       <Button size="sm" variant="ghost" className="hover:bg-white/10 text-white/80" disabled={k.status === "revoked"} onClick={() => setRevokeId(k.id)}>
@@ -139,6 +140,7 @@ function Page() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
 
