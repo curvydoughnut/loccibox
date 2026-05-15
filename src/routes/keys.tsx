@@ -6,10 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Copy, Plus, Trash2, Ban } from "lucide-react";
+import { Copy, Plus, Trash2, Ban, KeyRound } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -19,15 +18,8 @@ export const Route = createFileRoute("/keys")({
 });
 
 type ApiKey = {
-  id: string;
-  name: string;
-  key: string;
-  created: string;
-  lastUsed: string;
-  status: "active" | "revoked";
-  rateLimit: number | null;
-  maxConcurrent: number;
-  timeout: number;
+  id: string; name: string; key: string; created: string; lastUsed: string;
+  status: "active" | "revoked"; rateLimit: number | null; maxConcurrent: number; timeout: number;
 };
 
 function genKey() {
@@ -53,7 +45,6 @@ function Page() {
   const [rateLimited, setRateLimited] = useState(true);
   const [rate, setRate] = useState(100);
   const [created, setCreated] = useState<ApiKey | null>(null);
-
   const [revokeId, setRevokeId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
@@ -79,76 +70,68 @@ function Page() {
     toast.success("API Key created successfully");
   };
 
-  const copy = (key: string) => {
-    navigator.clipboard.writeText(key);
-    toast.success("Copied to clipboard");
-  };
-
-  const revoke = () => {
-    if (!revokeId) return;
-    setKeys((ks) => ks.map((k) => k.id === revokeId ? { ...k, status: "revoked" } : k));
-    setRevokeId(null);
-    toast.success("API Key revoked");
-  };
-
-  const del = () => {
-    if (!deleteId) return;
-    setKeys((ks) => ks.filter((k) => k.id !== deleteId));
-    setDeleteId(null);
-    toast.success("API Key deleted");
-  };
+  const copy = (key: string) => { navigator.clipboard.writeText(key); toast.success("Copied to clipboard"); };
+  const revoke = () => { if (!revokeId) return; setKeys((ks) => ks.map((k) => k.id === revokeId ? { ...k, status: "revoked" } : k)); setRevokeId(null); toast.success("API Key revoked"); };
+  const del = () => { if (!deleteId) return; setKeys((ks) => ks.filter((k) => k.id !== deleteId)); setDeleteId(null); toast.success("API Key deleted"); };
 
   return (
     <AppLayout>
-      <div className="p-8 space-y-6 max-w-7xl">
-        <div className="flex items-center justify-between">
+      <div className="p-6 lg:p-10 space-y-6 max-w-7xl">
+        <div className="flex items-center justify-between animate-fade-up">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">API Keys</h1>
-            <p className="text-muted-foreground mt-1">Manage your API keys and rate limits</p>
+            <h1 className="text-4xl font-extrabold tracking-tight">API Keys</h1>
+            <p className="text-white/60 mt-2">Manage your API keys, rate limits, and concurrent sandbox limits.</p>
           </div>
-          <Button onClick={() => setOpen(true)} className="bg-gradient-brand text-primary-foreground hover:opacity-90 h-10">
-            <Plus className="w-4 h-4 mr-2" /> Create New API Key
+          <Button onClick={() => setOpen(true)} className="bg-gradient-primary text-white hover:opacity-90 h-11 px-5 shadow-primary">
+            <Plus className="w-4 h-4 mr-2" /> Create New Key
           </Button>
         </div>
 
-        <Card className="border-border bg-card overflow-hidden">
+        <div className="glass rounded-2xl overflow-hidden animate-fade-up" style={{ animationDelay: "100ms" }}>
           <table className="w-full text-sm">
-            <thead className="bg-muted/30">
-              <tr className="text-left text-xs uppercase tracking-wider text-muted-foreground">
-                <th className="px-6 py-3 font-medium">Key Name</th>
-                <th className="px-6 py-3 font-medium">Created</th>
-                <th className="px-6 py-3 font-medium">Last Used</th>
-                <th className="px-6 py-3 font-medium">Status</th>
-                <th className="px-6 py-3 font-medium">Rate Limit</th>
-                <th className="px-6 py-3 font-medium text-right">Actions</th>
+            <thead className="bg-white/5">
+              <tr className="text-left text-xs uppercase tracking-wider text-white/50">
+                <th className="px-6 py-4 font-medium">Key Name</th>
+                <th className="px-6 py-4 font-medium">Created</th>
+                <th className="px-6 py-4 font-medium">Last Used</th>
+                <th className="px-6 py-4 font-medium">Status</th>
+                <th className="px-6 py-4 font-medium">Rate Limit</th>
+                <th className="px-6 py-4 font-medium text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {keys.map((k, i) => (
-                <tr key={k.id} className={cn("border-t border-border hover:bg-accent/40 transition-colors", i % 2 && "bg-muted/10")}>
-                  <td className="px-6 py-3">
-                    <div className="font-medium">{k.name}</div>
-                    <div className="font-mono text-xs text-muted-foreground">{k.key.slice(0, 14)}…{k.key.slice(-4)}</div>
+              {keys.map((k) => (
+                <tr key={k.id} className="border-t border-white/5 hover:bg-white/5 transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-lg bg-gradient-cyan-teal flex items-center justify-center shadow-sm">
+                        <KeyRound className="w-4 h-4 text-white" />
+                      </div>
+                      <div>
+                        <div className="font-semibold">{k.name}</div>
+                        <div className="font-mono text-xs text-white/50">{k.key.slice(0, 14)}…{k.key.slice(-4)}</div>
+                      </div>
+                    </div>
                   </td>
-                  <td className="px-6 py-3 text-muted-foreground">{k.created}</td>
-                  <td className="px-6 py-3 text-muted-foreground">{k.lastUsed}</td>
-                  <td className="px-6 py-3">
+                  <td className="px-6 py-4 text-white/70">{k.created}</td>
+                  <td className="px-6 py-4 text-white/70">{k.lastUsed}</td>
+                  <td className="px-6 py-4">
                     <span className={cn(
-                      "inline-flex items-center px-2 py-0.5 rounded-md text-xs border",
-                      k.status === "active" ? "bg-success/15 text-success border-success/30" : "bg-muted text-muted-foreground border-border"
+                      "inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium border",
+                      k.status === "active" ? "bg-success/15 text-success border-success/30" : "bg-white/5 text-white/50 border-white/10"
                     )}>
                       {k.status === "active" ? "Active" : "Revoked"}
                     </span>
                   </td>
-                  <td className="px-6 py-3 font-mono text-xs">{k.rateLimit ? `${k.rateLimit}/min` : "Unlimited"}</td>
-                  <td className="px-6 py-3 text-right">
+                  <td className="px-6 py-4 font-mono text-xs">{k.rateLimit ? `${k.rateLimit}/min` : "Unlimited"}</td>
+                  <td className="px-6 py-4 text-right">
                     <div className="inline-flex gap-1">
-                      <Button size="sm" variant="ghost" onClick={() => copy(k.key)}><Copy className="w-3.5 h-3.5" /></Button>
-                      <Button size="sm" variant="ghost" disabled={k.status === "revoked"} onClick={() => setRevokeId(k.id)}>
+                      <Button size="sm" variant="ghost" className="hover:bg-white/10 text-white/80" onClick={() => copy(k.key)}><Copy className="w-3.5 h-3.5" /></Button>
+                      <Button size="sm" variant="ghost" className="hover:bg-white/10 text-white/80" disabled={k.status === "revoked"} onClick={() => setRevokeId(k.id)}>
                         <Ban className="w-3.5 h-3.5" />
                       </Button>
-                      <Button size="sm" variant="ghost" onClick={() => setDeleteId(k.id)}>
-                        <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                      <Button size="sm" variant="ghost" className="hover:bg-destructive/20 text-destructive" onClick={() => setDeleteId(k.id)}>
+                        <Trash2 className="w-3.5 h-3.5" />
                       </Button>
                     </div>
                   </td>
@@ -156,70 +139,69 @@ function Page() {
               ))}
             </tbody>
           </table>
-        </Card>
+        </div>
       </div>
 
-      {/* Create modal */}
+      {/* Create modal — white hero */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="bg-card border-border">
+        <DialogContent className="bg-white border-slate-200 text-slate-900">
           <DialogHeader>
-            <DialogTitle>Create New API Key</DialogTitle>
-            <DialogDescription>Configure limits and rate controls for this key.</DialogDescription>
+            <DialogTitle className="hero-text">Create New API Key</DialogTitle>
+            <DialogDescription className="hero-text-muted">Configure limits and rate controls for this key.</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="kn">Key Name</Label>
-              <Input id="kn" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g., Production API" />
+              <Label htmlFor="kn" className="hero-text">Key Name</Label>
+              <Input id="kn" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g., Production API" className="bg-white border-slate-200 hero-text" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="mc">Max Concurrent</Label>
-                <Input id="mc" type="number" min={1} max={100} value={maxConc} onChange={(e) => setMaxConc(+e.target.value)} />
+                <Label htmlFor="mc" className="hero-text">Max Concurrent</Label>
+                <Input id="mc" type="number" min={1} max={100} value={maxConc} onChange={(e) => setMaxConc(+e.target.value)} className="bg-white border-slate-200 hero-text" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="to">Timeout (seconds)</Label>
-                <Input id="to" type="number" min={1} max={300} value={timeout_} onChange={(e) => setTimeout_(+e.target.value)} />
+                <Label htmlFor="to" className="hero-text">Timeout (s)</Label>
+                <Input id="to" type="number" min={1} max={300} value={timeout_} onChange={(e) => setTimeout_(+e.target.value)} className="bg-white border-slate-200 hero-text" />
               </div>
             </div>
-            <div className="flex items-center justify-between rounded-md border border-border p-3">
+            <div className="flex items-center justify-between rounded-lg border border-slate-200 p-3 bg-slate-50">
               <div>
-                <Label htmlFor="rl">Rate Limited</Label>
-                <p className="text-xs text-muted-foreground">Limit requests per minute</p>
+                <Label htmlFor="rl" className="hero-text">Rate Limited</Label>
+                <p className="text-xs hero-text-muted">Limit requests per minute</p>
               </div>
               <Switch id="rl" checked={rateLimited} onCheckedChange={setRateLimited} />
             </div>
             {rateLimited && (
               <div className="space-y-2">
-                <Label htmlFor="r">Max requests per minute</Label>
-                <Input id="r" type="number" min={1} value={rate} onChange={(e) => setRate(+e.target.value)} />
+                <Label htmlFor="r" className="hero-text">Max requests / minute</Label>
+                <Input id="r" type="number" min={1} value={rate} onChange={(e) => setRate(+e.target.value)} className="bg-white border-slate-200 hero-text" />
               </div>
             )}
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button onClick={create} className="bg-gradient-brand text-primary-foreground hover:opacity-90">Create</Button>
+            <Button variant="ghost" onClick={() => setOpen(false)} className="hero-text hover:bg-slate-100">Cancel</Button>
+            <Button onClick={create} className="bg-gradient-primary text-white hover:opacity-90 shadow-primary">Create</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Show created key */}
       <Dialog open={!!created} onOpenChange={(v) => !v && setCreated(null)}>
-        <DialogContent className="bg-card border-border">
+        <DialogContent className="bg-white border-slate-200 text-slate-900">
           <DialogHeader>
-            <DialogTitle>API Key Created</DialogTitle>
-            <DialogDescription className="text-warning">Save this key somewhere safe — you won't see it again.</DialogDescription>
+            <DialogTitle className="hero-text">API Key Created</DialogTitle>
+            <DialogDescription className="text-amber-600">Save this key somewhere safe — you won't see it again.</DialogDescription>
           </DialogHeader>
           {created && (
             <div className="space-y-2">
-              <Label>{created.name}</Label>
+              <Label className="hero-text">{created.name}</Label>
               <div className="flex gap-2">
-                <code className="flex-1 px-3 py-2 rounded-md bg-background border border-border font-mono text-xs break-all">{created.key}</code>
-                <Button onClick={() => copy(created.key)} variant="outline"><Copy className="w-4 h-4" /></Button>
+                <code className="flex-1 px-3 py-2 rounded-md bg-slate-50 border border-slate-200 font-mono text-xs break-all hero-text">{created.key}</code>
+                <Button onClick={() => copy(created.key)} variant="outline" className="border-slate-200"><Copy className="w-4 h-4" /></Button>
               </div>
             </div>
           )}
           <DialogFooter>
-            <Button onClick={() => setCreated(null)} className="bg-gradient-brand text-primary-foreground">Done</Button>
+            <Button onClick={() => setCreated(null)} className="bg-gradient-primary text-white shadow-primary">Done</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
