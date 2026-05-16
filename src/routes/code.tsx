@@ -106,6 +106,8 @@ function Page() {
   const [autosave, setAutosave] = useState(true);
   const [savedAt, setSavedAt] = useState<string | null>("just now");
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [termInput, setTermInput] = useState("");
+  const [termHistory, setTermHistory] = useState<string[]>([]);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const active = files.find((f) => f.id === activeId) ?? files[0];
@@ -336,19 +338,51 @@ function Page() {
                     Autosave
                   </label>
                 </div>
-                <pre className="flex-1 min-h-0 overflow-auto p-4 font-mono text-xs leading-relaxed hero-text bg-white">
-                  <span className="hero-text-muted">$ run {active.name}</span>
-                  {"\n"}
-                  {running && <span className="text-blue-500 inline-flex items-center gap-1.5"><Loader2 className="w-3 h-3 animate-spin" /> spinning microVM…</span>}
-                  {output && (
-                    <>
-                      <span>{output.stdout}</span>
-                      {"\n"}
-                      <span className="hero-text-muted">[process exited {output.exit} · {output.ms}ms]</span>
-                    </>
-                  )}
-                  {!output && !running && <span className="hero-text-muted">Press Run or Ctrl/Cmd+Enter to execute. Output appears here.</span>}
-                </pre>
+                <div
+                  className="flex-1 min-h-0 overflow-auto p-4 font-mono text-xs leading-relaxed hero-text bg-white cursor-text"
+                  onClick={(e) => {
+                    const ta = (e.currentTarget.querySelector("textarea") as HTMLTextAreaElement | null);
+                    ta?.focus();
+                  }}
+                >
+                  <pre className="whitespace-pre-wrap">
+                    <span className="hero-text-muted">$ run {active.name}</span>
+                    {"\n"}
+                    {running && <span className="text-blue-500 inline-flex items-center gap-1.5"><Loader2 className="w-3 h-3 animate-spin" /> spinning microVM…</span>}
+                    {output && (
+                      <>
+                        <span>{output.stdout}</span>
+                        {"\n"}
+                        <span className="hero-text-muted">[process exited {output.exit} · {output.ms}ms]</span>
+                        {"\n"}
+                      </>
+                    )}
+                    {termHistory.map((line, i) => (
+                      <span key={i}><span className="text-blue-500">$</span> {line}{"\n"}</span>
+                    ))}
+                  </pre>
+                  <div className="flex items-start gap-2 mt-1">
+                    <span className="text-blue-500 select-none">$</span>
+                    <textarea
+                      value={termInput}
+                      onChange={(e) => setTermInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          const cmd = termInput.trim();
+                          if (cmd) {
+                            setTermHistory((h) => [...h, cmd]);
+                            setTermInput("");
+                          }
+                        }
+                      }}
+                      rows={1}
+                      spellCheck={false}
+                      placeholder="Type a command or code and press Enter…"
+                      className="flex-1 resize-none bg-transparent outline-none border-0 font-mono text-xs hero-text placeholder:hero-text-muted"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
