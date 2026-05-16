@@ -1,11 +1,7 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Boxes, Split, Shield, Lock, ArrowRight, Sparkles, Building2, KeyRound } from "lucide-react";
+import { Boxes, ArrowRight, BookOpen, Layers, Shield, Server, Github, Twitter, Mail, Lock } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
@@ -18,21 +14,13 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-const features = [
-  { icon: Split, title: "Dual Sandbox Testing", desc: "Write code while testing it", gradient: "bg-gradient-purple-pink" },
-  { icon: Shield, title: "Complete Isolation", desc: "Hardware-isolated microVMs", gradient: "bg-gradient-cyan-blue" },
-  { icon: Lock, title: "Enterprise Security", desc: "Secure, audited, compliant", gradient: "bg-gradient-teal-green" },
-];
-
 function Landing() {
   const { user, login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const [orgDomain, setOrgDomain] = useState("");
-  const [ssoEmail, setSsoEmail] = useState("");
-  const [ssoErrors, setSsoErrors] = useState<{ orgDomain?: string; ssoEmail?: string }>({});
 
   useEffect(() => { if (user) navigate({ to: "/dashboard" }); }, [user, navigate]);
 
@@ -49,168 +37,205 @@ function Landing() {
   };
 
   const enterDemo = () => {
-    login("demo@sandboxapi.dev", { isDemo: true });
+    login("demo@loccibox.dev", { isDemo: true });
     toast.success("Demo mode activated");
     navigate({ to: "/dashboard" });
   };
 
-  const submitSso = (e: React.FormEvent) => {
-    e.preventDefault();
-    const errs: typeof ssoErrors = {};
-    if (!/^[a-z0-9-]+\.[a-z]{2,}$/i.test(orgDomain)) errs.orgDomain = "Enter your company domain (e.g. acme.com)";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ssoEmail)) errs.ssoEmail = "Enter your work email";
-    setSsoErrors(errs);
-    if (Object.keys(errs).length) return;
-    const org = orgDomain.split(".")[0];
-    toast.success(`Redirecting to ${org}'s identity provider…`);
-    setTimeout(() => {
-      login(ssoEmail, { isEnterprise: true, org });
-      navigate({ to: "/dashboard" });
-    }, 700);
-  };
-
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="h-16 sm:h-20 px-4 sm:px-6 lg:px-10 flex items-center justify-between">
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-primary">
-            <Boxes className="w-5 h-5 text-white" />
+    <div className="min-h-screen w-full" style={{ background: "#e8f4f9" }}>
+      {/* Top Nav */}
+      <header
+        className="mx-auto max-w-[1400px] flex items-center justify-between px-6 sm:px-10 h-20 rounded-2xl mt-4"
+        style={{ background: "#ffffff", boxShadow: "0 2px 8px rgba(15,42,75,0.06)" }}
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: "linear-gradient(135deg,#4a5ed8,#6b7fd9)" }}>
+            <Boxes className="w-5 h-5" style={{ color: "#fff" }} />
           </div>
-          <span className="font-bold tracking-tight text-base sm:text-lg">Locci Box</span>
+          <span className="font-bold tracking-tight text-lg" style={{ color: "#1a3a52" }}>Locci Box</span>
         </div>
-        <Button asChild size="sm" className="bg-gradient-primary hover:opacity-90 text-white shadow-primary">
-          <a href="#login">Sign In</a>
-        </Button>
+
+        <nav className="hidden md:flex items-center gap-10 text-sm font-medium" style={{ color: "#1a3a52" }}>
+          <a href="#" className="hover:opacity-70">Documentation</a>
+          <a href="#" className="hover:opacity-70">Pricing</a>
+          <a href="#" className="hover:opacity-70">Use Cases</a>
+        </nav>
+
+        <div className="flex items-center gap-5">
+          <a href="#login" className="text-sm font-medium hidden sm:inline" style={{ color: "#1a3a52" }}>Sign In</a>
+          <button
+            onClick={() => document.getElementById("login")?.scrollIntoView({ behavior: "smooth" })}
+            className="px-5 py-2.5 rounded-lg text-sm font-semibold transition-all hover:-translate-y-0.5"
+            style={{ background: "#3b82f6", color: "#fff", boxShadow: "0 4px 12px rgba(59,130,246,0.30)" }}
+          >
+            Get Started
+          </button>
+        </div>
       </header>
 
-      <section className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-16 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-        <div className="space-y-6 sm:space-y-8 animate-fade-up">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass text-xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-            <span className="text-white/80">Live microVMs · sub-100ms cold start</span>
+      {/* Hero */}
+      <section
+        className="mx-auto max-w-[1400px] mt-8 rounded-[28px] px-8 sm:px-14 py-14 sm:py-20 grid lg:grid-cols-2 gap-12 items-center"
+        style={{ background: "linear-gradient(135deg,#4a5ed8,#6b7fd9)" }}
+      >
+        <div className="space-y-7 animate-fade-up">
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold tracking-[0.14em]"
+            style={{ background: "rgba(255,255,255,0.15)", color: "#fff", border: "1px solid rgba(255,255,255,0.25)" }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#fff" }} />
+            V2.0 ARCHITECTURE LIVE
           </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight leading-[1.05]">
-            Every agent <br />
-            deserves its own <span className="text-gradient-primary">computer</span>
+          <h1 className="text-5xl sm:text-6xl font-bold leading-[1.05] tracking-tight" style={{ color: "#fff" }}>
+            Every agent deserves<br />its own computer
           </h1>
-          <p className="text-base sm:text-xl text-white/70 font-light max-w-xl leading-relaxed">
-            Hardware-isolated microVMs for safe code execution. Built for AI agents that write, test, and ship code at scale.
+          <p className="text-base sm:text-lg max-w-xl leading-relaxed" style={{ color: "rgba(255,255,255,0.88)" }}>
+            Hardware-isolated microVMs for safe code execution. Deploy untrusted workloads with zero-trust infrastructure in milliseconds.
           </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-            {features.map((f) => (
-              <div key={f.title} className="glass glass-hover p-4 rounded-xl">
-                <div className={`w-10 h-10 rounded-lg ${f.gradient} flex items-center justify-center mb-3 shadow-lg`}>
-                  <f.icon className="w-5 h-5 text-white" />
-                </div>
-                <div className="font-semibold text-sm">{f.title}</div>
-                <div className="text-xs text-white/60 mt-1">{f.desc}</div>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <Button asChild size="lg" className="bg-gradient-primary text-white hover:opacity-90 text-base h-12 px-7 shadow-primary">
-              <a href="#login">Get Started <ArrowRight className="w-4 h-4 ml-1" /></a>
-            </Button>
-            <Button onClick={enterDemo} size="lg" variant="outline" className="h-12 px-7 glass glass-hover border-white/20 text-white hover:text-white">
-              <Sparkles className="w-4 h-4 mr-1" /> Try Demo
-            </Button>
+          <div className="flex flex-wrap gap-3 pt-2">
+            <button
+              onClick={() => document.getElementById("login")?.scrollIntoView({ behavior: "smooth" })}
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg text-sm font-semibold transition-all hover:-translate-y-0.5"
+              style={{ background: "#fff", color: "#4a5ed8", border: "2px solid #fff" }}
+            >
+              Start Building Free <ArrowRight className="w-4 h-4" />
+            </button>
+            <button
+              onClick={enterDemo}
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg text-sm font-semibold transition-all"
+              style={{ background: "rgba(255,255,255,0.18)", color: "#fff", border: "1px solid rgba(255,255,255,0.4)" }}
+            >
+              <BookOpen className="w-4 h-4" /> Demo
+            </button>
           </div>
         </div>
 
-        <div id="login" className="hero-white p-6 sm:p-8 lg:p-10 animate-scale">
-          <h2 className="text-2xl font-bold tracking-tight hero-text">Sign in to your workspace</h2>
-          <p className="text-sm hero-text-muted mt-1">Use email or your company SSO — or skip ahead with the demo.</p>
+        {/* Login card */}
+        <div
+          id="login"
+          className="rounded-2xl p-8 animate-scale"
+          style={{ background: "rgba(45,74,105,0.28)", border: "1px solid rgba(255,255,255,0.18)", backdropFilter: "blur(8px)" }}
+        >
+          <h2 className="text-2xl font-bold tracking-tight" style={{ color: "#fff" }}>Access Sandbox</h2>
+          <p className="text-sm mt-1.5" style={{ color: "rgba(255,255,255,0.72)" }}>Enter your credentials to manage microVMs.</p>
 
-          <Tabs defaultValue="email" className="mt-6">
-            <TabsList className="grid grid-cols-2 w-full bg-slate-100">
-              <TabsTrigger value="email" className="data-[state=active]:bg-white data-[state=active]:hero-text">
-                <KeyRound className="w-3.5 h-3.5 mr-1.5" /> Email
-              </TabsTrigger>
-              <TabsTrigger value="sso" className="data-[state=active]:bg-white data-[state=active]:hero-text">
-                <Building2 className="w-3.5 h-3.5 mr-1.5" /> Enterprise SSO
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="email" className="mt-5">
-              <form onSubmit={submit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="hero-text font-medium">Email</Label>
-                  <Input
-                    id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@company.com" maxLength={255}
-                    className="bg-white border-slate-200 hero-text placeholder:text-slate-400 focus-visible:ring-blue-500"
-                  />
-                  {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password" className="hero-text font-medium">Password</Label>
-                  <Input
-                    id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••" maxLength={128}
-                    className="bg-white border-slate-200 hero-text placeholder:text-slate-400 focus-visible:ring-blue-500"
-                  />
-                  {errors.password && <p className="text-xs text-red-500">{errors.password}</p>}
-                </div>
-                <Button type="submit" className="w-full bg-gradient-primary text-white hover:opacity-90 h-11 shadow-primary">Sign In</Button>
-              </form>
-            </TabsContent>
-
-            <TabsContent value="sso" className="mt-5">
-              <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 mb-4 flex items-start gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shrink-0">
-                  <Shield className="w-4 h-4 text-white" />
-                </div>
-                <div className="text-xs hero-text-muted leading-relaxed">
-                  SAML 2.0 · Okta · Azure AD · Google Workspace · SCIM provisioning · audit logs included.
-                </div>
+          <form onSubmit={submit} className="mt-6 space-y-4">
+            <div>
+              <label className="block text-xs font-semibold mb-1.5" style={{ color: "#fff" }}>Email Address</label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
+                <input
+                  type="email" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={255}
+                  placeholder="admin@enterprise.com"
+                  className="w-full pl-10 pr-3 py-3 rounded-lg text-sm outline-none transition-colors"
+                  style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.22)", color: "#fff" }}
+                />
               </div>
-              <form onSubmit={submitSso} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="org" className="hero-text font-medium">Company Domain</Label>
-                  <div className="flex">
-                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-slate-200 bg-slate-50 text-xs hero-text-muted font-mono">https://</span>
-                    <Input
-                      id="org" value={orgDomain} onChange={(e) => setOrgDomain(e.target.value.toLowerCase().trim())}
-                      placeholder="acme.com" maxLength={120}
-                      className="bg-white border-slate-200 hero-text placeholder:text-slate-400 focus-visible:ring-blue-500 rounded-l-none"
-                    />
-                  </div>
-                  {ssoErrors.orgDomain && <p className="text-xs text-red-500">{ssoErrors.orgDomain}</p>}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="sso-email" className="hero-text font-medium">Work Email</Label>
-                  <Input
-                    id="sso-email" type="email" value={ssoEmail} onChange={(e) => setSsoEmail(e.target.value)}
-                    placeholder="you@acme.com" maxLength={255}
-                    className="bg-white border-slate-200 hero-text placeholder:text-slate-400 focus-visible:ring-blue-500"
-                  />
-                  {ssoErrors.ssoEmail && <p className="text-xs text-red-500">{ssoErrors.ssoEmail}</p>}
-                </div>
-                <Button type="submit" className="w-full bg-gradient-primary text-white hover:opacity-90 h-11 shadow-primary">
-                  <Building2 className="w-4 h-4 mr-2" /> Continue with SSO
-                </Button>
-                <p className="text-[11px] text-center hero-text-muted">
-                  Need to set up SSO? <a href="#" className="text-blue-600 hover:underline font-medium">Talk to sales</a>
-                </p>
-              </form>
-            </TabsContent>
-          </Tabs>
+              {errors.email && <p className="text-xs mt-1" style={{ color: "#fecaca" }}>{errors.email}</p>}
+            </div>
 
-          <div className="relative my-5">
-            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200" /></div>
-            <div className="relative flex justify-center"><span className="bg-white px-3 text-[11px] uppercase tracking-wider hero-text-muted font-semibold">or</span></div>
-          </div>
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-semibold" style={{ color: "#fff" }}>Password</label>
+                <a href="#" className="text-xs" style={{ color: "rgba(255,255,255,0.7)" }}>Forgot?</a>
+              </div>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
+                <input
+                  type="password" value={password} onChange={(e) => setPassword(e.target.value)} maxLength={128}
+                  placeholder="••••••••"
+                  className="w-full pl-10 pr-3 py-3 rounded-lg text-sm outline-none transition-colors"
+                  style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.22)", color: "#fff" }}
+                />
+              </div>
+              {errors.password && <p className="text-xs mt-1" style={{ color: "#fecaca" }}>{errors.password}</p>}
+            </div>
 
-          <Button type="button" onClick={enterDemo} variant="outline" className="w-full h-11 border-slate-200 hero-text hover:bg-slate-50">
-            <Sparkles className="w-4 h-4 mr-2" /> Explore in Demo Mode
-          </Button>
-          <p className="text-[11px] text-center hero-text-muted mt-3">
-            Demo opens every feature with sample data — no signup required.
+            <label className="flex items-center gap-2 text-sm cursor-pointer" style={{ color: "rgba(255,255,255,0.85)" }}>
+              <input
+                type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)}
+                className="w-4 h-4 rounded accent-white"
+              />
+              Remember me
+            </label>
+
+            <button
+              type="submit"
+              className="w-full py-3 rounded-lg text-sm font-semibold transition-all hover:-translate-y-0.5"
+              style={{ background: "#fff", color: "#4a5ed8" }}
+            >
+              Sign In to Console
+            </button>
+          </form>
+
+          <p className="text-[11px] text-center mt-4" style={{ color: "rgba(255,255,255,0.6)" }}>
+            Secured by Enterprise SSO &amp; Hardware Enclaves
           </p>
         </div>
       </section>
+
+      {/* Feature cards */}
+      <section className="mx-auto max-w-[1400px] mt-8 grid md:grid-cols-3 gap-6 px-2">
+        {[
+          { Icon: Layers,  title: "Dual Sandbox Testing",  desc: "Run untrusted code in parallel environments. Compare outputs instantly with zero risk to your primary infrastructure or host OS." },
+          { Icon: Shield,  title: "Complete Isolation",    desc: "Hardware-enforced boundaries ensure absolute separation. Network, memory, and CPU are rigidly partitioned per microVM instance." },
+          { Icon: Server,  title: "Enterprise Security",   desc: "SOC2 Type II certified infrastructure. Granular RBAC, audit logging, and automated compliance reporting built into the core." },
+        ].map(({ Icon, title, desc }) => (
+          <div
+            key={title}
+            className="rounded-2xl p-8 min-h-[260px] flex flex-col transition-transform hover:-translate-y-1"
+            style={{ background: "linear-gradient(135deg,#5568d3,#5a8fbf)", boxShadow: "0 8px 24px rgba(15,42,75,0.12)" }}
+          >
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center mb-6"
+              style={{ background: "rgba(255,255,255,0.18)", border: "1px solid rgba(255,255,255,0.25)" }}
+            >
+              <Icon className="w-5 h-5" style={{ color: "#fff" }} />
+            </div>
+            <h3 className="text-xl font-bold mb-3" style={{ color: "#fff" }}>{title}</h3>
+            <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.85)" }}>{desc}</p>
+          </div>
+        ))}
+      </section>
+
+      {/* Footer */}
+      <footer
+        className="mx-auto max-w-[1400px] mt-10 mb-6 rounded-2xl px-10 py-8"
+        style={{ background: "linear-gradient(135deg,#4a5ed8,#6b7fd9)" }}
+      >
+        <div className="flex flex-col md:flex-row items-center justify-between gap-5">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(255,255,255,0.18)" }}>
+              <Boxes className="w-4 h-4" style={{ color: "#fff" }} />
+            </div>
+            <span className="text-sm font-semibold" style={{ color: "#fff" }}>Locci Box Inc.</span>
+          </div>
+
+          <nav className="flex items-center gap-8 text-sm" style={{ color: "rgba(255,255,255,0.85)" }}>
+            <a href="#" className="hover:text-white">Documentation</a>
+            <a href="#" className="hover:text-white">System Status</a>
+            <a href="#" className="hover:text-white">Privacy Policy</a>
+          </nav>
+
+          <div className="flex items-center gap-3">
+            <a href="#" className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.18)" }}>
+              <Github className="w-4 h-4" style={{ color: "#fff" }} />
+            </a>
+            <a href="#" className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.18)" }}>
+              <Twitter className="w-4 h-4" style={{ color: "#fff" }} />
+            </a>
+          </div>
+        </div>
+
+        <div className="mt-6 pt-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs" style={{ borderTop: "1px solid rgba(255,255,255,0.18)", color: "rgba(255,255,255,0.75)" }}>
+          <span>© 2026 Locci Box. All rights reserved.</span>
+          <span className="inline-flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full" style={{ background: "#22c55e" }} />
+            Systems Operational
+          </span>
+        </div>
+      </footer>
     </div>
   );
 }
