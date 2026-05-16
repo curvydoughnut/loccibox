@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — SandboxAPI" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — Locci Box" }] }),
   component: Page,
 });
 

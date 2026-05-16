@@ -11,7 +11,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SandboxAPI — Every agent deserves its own computer" },
+      { title: "Locci Box — Every agent deserves its own computer" },
       { name: "description", content: "Hardware-isolated microVMs for safe code execution. Dual sandbox testing for AI agents." },
     ],
   }),
@@ -44,7 +44,7 @@ function Landing() {
     setErrors(errs);
     if (Object.keys(errs).length) return;
     login(email);
-    toast.success("Welcome to SandboxAPI");
+    toast.success("Welcome to Locci Box");
     navigate({ to: "/dashboard" });
   };
 
@@ -76,7 +76,7 @@ function Landing() {
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-primary">
             <Boxes className="w-5 h-5 text-white" />
           </div>
-          <span className="font-bold tracking-tight text-base sm:text-lg">SandboxAPI</span>
+          <span className="font-bold tracking-tight text-base sm:text-lg">Locci Box</span>
         </div>
         <Button asChild size="sm" className="bg-gradient-primary hover:opacity-90 text-white shadow-primary">
           <a href="#login">Sign In</a>

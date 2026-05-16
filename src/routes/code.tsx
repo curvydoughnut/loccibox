@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/code")({
-  head: () => ({ meta: [{ title: "Code Editor — SandboxAPI" }] }),
+  head: () => ({ meta: [{ title: "Code Editor — Locci Box" }] }),
   component: Page,
 });
 
@@ -27,7 +27,7 @@ type FileEntry = { id: string; name: string; lang: Lang; content: string };
 const seed: FileEntry[] = [
   {
     id: "f1", name: "main.py", lang: "python",
-    content: `# Welcome to SandboxAPI Code Editor
+    content: `# Welcome to Locci Box Code Editor
 # Full IDE running in an isolated microVM
 
 def fibonacci(n: int) -> int:
