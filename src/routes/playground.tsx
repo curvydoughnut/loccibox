@@ -115,37 +115,53 @@ function Page() {
   const [stats, setStats] = useState({ passed: 0, failed: 0 });
   const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Split-screen secondary sandbox (appears after first run)
-  const [splitOpen, setSplitOpen] = useState(false);
-  const [code2, setCode2] = useState(codeStarter.python);
-  const [tests2, setTests2] = useState(testStarter.python);
-  const [run2, setRun2] = useState<RunState>("idle");
-  const [output2, setOutput2] = useState<{ stdout: string; stderr: string; exit: number; ms: number } | null>(null);
+  // Additional sandboxes (unlimited)
+  type Sandbox = {
+    id: string;
+    code: string;
+    tests: string;
+    run: RunState;
+    output: { stdout: string; stderr: string; exit: number; ms: number } | null;
+  };
+  const [sandboxes, setSandboxes] = useState<Sandbox[]>([]);
 
-  const openSplit = () => {
-    setCode2(codeStarter[lang]);
-    setTests2(testStarter[lang]);
-    setOutput2(null);
-    setRun2("idle");
-    setSplitOpen(true);
+  const addSandbox = () => {
+    setSandboxes((s) => [
+      ...s,
+      {
+        id: `sb-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        code: codeStarter[lang],
+        tests: testStarter[lang],
+        run: "idle",
+        output: null,
+      },
+    ]);
   };
 
-  const runTests2 = async () => {
-    if (run2 === "running" || !tests2.trim()) return;
-    setRun2("running");
-    setOutput2(null);
+  const removeSandbox = (id: string) =>
+    setSandboxes((s) => s.filter((x) => x.id !== id));
+
+  const updateSandbox = (id: string, patch: Partial<Sandbox>) =>
+    setSandboxes((s) => s.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+
+  const runSandbox = async (id: string) => {
+    const sb = sandboxes.find((x) => x.id === id);
+    if (!sb || sb.run === "running" || !sb.tests.trim()) return;
+    updateSandbox(id, { run: "running", output: null });
     const start = performance.now();
     await new Promise((r) => setTimeout(r, 600 + Math.random() * 400));
     const ms = Math.round(performance.now() - start);
-    const failedHeuristic = /assert\s+False|raise\s+"|exit\s+1/.test(tests2);
+    const failedHeuristic = /assert\s+False|raise\s+"|exit\s+1/.test(sb.tests);
     const success = !failedHeuristic;
-    setOutput2({
-      stdout: success ? "✓ All tests passed!\n" : "AssertionError\n",
-      stderr: success ? "" : "AssertionError: test failed",
-      exit: success ? 0 : 1,
-      ms,
+    updateSandbox(id, {
+      run: success ? "passed" : "failed",
+      output: {
+        stdout: success ? "✓ All tests passed!\n" : "AssertionError\n",
+        stderr: success ? "" : "AssertionError: test failed",
+        exit: success ? 0 : 1,
+        ms,
+      },
     });
-    setRun2(success ? "passed" : "failed");
   };
 
   const onLangChange = (l: Lang) => {
