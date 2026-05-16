@@ -145,7 +145,7 @@ function ChatBody({
             }
             return (
               <Message from="assistant" key={m.id}>
-                <MessageContent variant="flat">
+                <MessageContent>
                   <MessageResponse>{text}</MessageResponse>
                 </MessageContent>
               </Message>
@@ -154,7 +154,7 @@ function ChatBody({
 
           {status === "submitted" && (
             <Message from="assistant">
-              <MessageContent variant="flat">
+              <MessageContent>
                 <Shimmer>BOB is reviewing…</Shimmer>
               </MessageContent>
             </Message>
