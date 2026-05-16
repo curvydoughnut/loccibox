@@ -60,7 +60,7 @@
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
-    "lucide-react": "^1.16.0",
+    "lucide-react": "^0.462.0",
     "motion": "^12.38.0",
     "nanoid": "^5.1.11",
     "react": "^19.2.0",
