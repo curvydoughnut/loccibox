@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
-import { Boxes, ArrowRight, BookOpen, Layers, Shield, Server, Github, Twitter, Mail, Lock } from "lucide-react";
+import { Boxes, ArrowRight, BookOpen, Layers, Shield, Server, Github, Twitter, Mail, Lock, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
@@ -21,25 +21,40 @@ function Landing() {
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => { if (user) navigate({ to: "/dashboard" }); }, [user, navigate]);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const errs: typeof errors = {};
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = "Enter a valid email";
     if (password.length < 6) errs.password = "Min 6 characters";
     setErrors(errs);
     if (Object.keys(errs).length) return;
-    login(email);
-    toast.success("Welcome to Locci Box");
-    navigate({ to: "/dashboard" });
+    setSubmitting(true);
+    try {
+      await login(email, { password });
+      toast.success("Welcome to Locci Box");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Sign-in failed";
+      toast.error(msg);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const enterDemo = () => {
-    login("demo@loccibox.dev", { isDemo: true });
-    toast.success("Demo mode activated");
-    navigate({ to: "/dashboard" });
+  const enterDemo = async () => {
+    setSubmitting(true);
+    try {
+      await login("demo@loccibox.dev", { isDemo: true });
+      toast.success("Demo mode activated");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Demo failed";
+      toast.error(msg);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -162,10 +177,11 @@ function Landing() {
 
             <button
               type="submit"
+              disabled={submitting}
               className="w-full py-3 rounded-lg text-sm font-semibold transition-all hover:-translate-y-0.5"
               style={{ background: "#fff", color: "#4a5ed8" }}
             >
-              Sign In to Console
+              {submitting ? <span className="inline-flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Signing in…</span> : "Sign In to Console"}
             </button>
           </form>
 

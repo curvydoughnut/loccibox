@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Code2, KeyRound, BookOpen, LogOut, Boxes, Bell, Github, Twitter, FileCode2, Sparkles, Building2, Split } from "lucide-react";
+import { LayoutDashboard, Code2, KeyRound, BookOpen, LogOut, Boxes, Bell, Github, Twitter, FileCode2, Sparkles, Building2, Split, Bug } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, gradient: "bg-gradient-cyan-blue" },
   { to: "/code", label: "Code Editor", icon: FileCode2, gradient: "bg-gradient-cyan-teal" },
+  { to: "/bob", label: "BOB", icon: Bug, gradient: "bg-gradient-primary" },
   { to: "/playground", label: "Playground", icon: Split, gradient: "bg-gradient-purple-pink" },
   { to: "/keys", label: "API Keys", icon: KeyRound, gradient: "bg-gradient-teal-green" },
   { to: "/docs", label: "Docs", icon: BookOpen, gradient: "bg-gradient-amber-orange" },
@@ -18,7 +19,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
 
-  const handleLogout = () => { logout(); navigate({ to: "/" }); };
+  const handleLogout = async () => { await logout(); navigate({ to: "/" }); };
 
   return (
     <div className="min-h-screen flex flex-col w-full">
@@ -45,7 +46,16 @@ export function AppLayout({ children }: { children: ReactNode }) {
       )}
 
       {/* Header */}
-      <header className="h-16 sm:h-20 sticky top-0 z-50 px-3 sm:px-6 lg:px-10 flex items-center justify-between gap-2 glass-strong border-x-0 border-t-0">
+      <header
+        className="h-16 sm:h-20 sticky top-0 z-50 px-3 sm:px-6 lg:px-10 flex items-center justify-between gap-2 border-x-0 border-t-0"
+        style={{
+          background: "rgba(232,244,249,0.72)",
+          backdropFilter: "blur(18px) saturate(140%)",
+          WebkitBackdropFilter: "blur(18px) saturate(140%)",
+          borderBottom: "1px solid rgba(224,242,254,0.6)",
+          boxShadow: "0 1px 0 rgba(255,255,255,0.5) inset, 0 2px 12px rgba(15,42,75,0.04)",
+        }}
+      >
         <Link to="/dashboard" className="flex items-center gap-2 sm:gap-3 group min-w-0">
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-primary transition-transform group-hover:scale-105 shrink-0">
             <Boxes className="w-5 h-5 text-white" />
@@ -92,7 +102,15 @@ export function AppLayout({ children }: { children: ReactNode }) {
       </header>
 
       {/* Mobile nav strip */}
-      <nav className="lg:hidden sticky top-16 sm:top-20 z-40 glass border-x-0 border-t-0 px-3 py-2 flex items-center gap-1.5 overflow-x-auto">
+      <nav
+        className="lg:hidden sticky top-16 sm:top-20 z-40 border-x-0 border-t-0 px-3 py-2 flex items-center gap-1.5 overflow-x-auto"
+        style={{
+          background: "rgba(255,255,255,0.7)",
+          backdropFilter: "blur(14px) saturate(140%)",
+          WebkitBackdropFilter: "blur(14px) saturate(140%)",
+          borderBottom: "1px solid rgba(224,242,254,0.6)",
+        }}
+      >
         {nav.map((n) => {
           const active = path === n.to || path.startsWith(n.to + "/");
           const Icon = n.icon;
