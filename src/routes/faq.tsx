@@ -16,6 +16,10 @@ export const Route = createFileRoute("/faq")({
 
 const FAQS: { q: string; a: string }[] = [
   {
+    q: "Quick start — how do I run my first sandbox?",
+    a: "1) Create an API key from the API Keys page. 2) Send a POST to https://api.sandboxapi.com/api/sandbox/run with your language and code, using Authorization: Bearer YOUR_API_KEY. 3) The response includes the sandbox id, stdout, exit code, and duration. You can also run code directly from the in-app Code or Playground pages without any setup.",
+  },
+  {
     q: "Who is Locci Box for?",
     a: "Locci Box is an enterprise-only platform for organizations running untrusted code or AI agents. Personal accounts and free email providers are not supported — sign-in requires a corporate email.",
   },

@@ -1,11 +1,12 @@
-import { createFileRoute, Navigate } from "@tanstack/react-router";
+import { createFileRoute, Navigate, Link } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { useAuth } from "@/lib/auth";
-import { Play, BookOpen, Lock, Split, Code2, Copy, Upload, FolderPlus, Folder, FileText, Trash2, FileUp } from "lucide-react";
+import { BookOpen, Lock, Split, Code2, Copy, Upload, FolderPlus, Folder, FileText, Trash2, FileUp, Search, Users, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export const Route = createFileRoute("/docs")({
   head: () => ({ meta: [{ title: "Documentation — Locci Box" }] }),
@@ -14,11 +15,12 @@ export const Route = createFileRoute("/docs")({
 
 const sections = [
   { id: "my-docs", label: "My Documents", icon: FileText, gradient: "bg-gradient-primary" },
-  { id: "quickstart", label: "Quick Start", icon: Play, gradient: "bg-gradient-cyan-blue" },
+  { id: "shared", label: "Shared Folder", icon: Users, gradient: "bg-gradient-cyan-blue" },
+  { id: "recent", label: "Recently Added", icon: Clock, gradient: "bg-gradient-amber-orange" },
   { id: "api", label: "API Reference", icon: BookOpen, gradient: "bg-gradient-purple-pink" },
   { id: "auth", label: "Authentication", icon: Lock, gradient: "bg-gradient-cyan-teal" },
-  { id: "dual", label: "Dual Sandbox", icon: Split, gradient: "bg-gradient-amber-orange" },
-  { id: "examples", label: "Examples", icon: Code2, gradient: "bg-gradient-teal-green" },
+  { id: "dual", label: "Dual Sandbox", icon: Split, gradient: "bg-gradient-teal-green" },
+  { id: "examples", label: "Examples", icon: Code2, gradient: "bg-gradient-purple-pink" },
 ];
 
 function Block({ code, lang }: { code: string; lang?: string }) {
@@ -39,6 +41,7 @@ function Page() {
   const { user } = useAuth();
   if (!user) return <Navigate to="/" />;
   const [active, setActive] = useState("my-docs");
+  const [search, setSearch] = useState("");
 
   type DocItem = { id: string; name: string; kind: "folder" | "file"; size?: number; createdAt: string };
   const [items, setItems] = useState<DocItem[]>([
@@ -68,6 +71,14 @@ function Page() {
     toast.success("Folder created");
   };
   const removeItem = (id: string) => setItems((s) => s.filter((x) => x.id !== id));
+
+  const sharedItems: DocItem[] = [
+    { id: "s1", name: "Team Runbooks", kind: "folder", createdAt: "1w ago" },
+    { id: "s2", name: "Security Policy.pdf", kind: "file", size: 412_000, createdAt: "3d ago" },
+    { id: "s3", name: "Onboarding Guide.md", kind: "file", size: 8_200, createdAt: "5d ago" },
+  ];
+  const filtered = items.filter((i) => i.name.toLowerCase().includes(search.toLowerCase()));
+  const recent = [...items].slice(0, 5);
   const formatSize = (n?: number) => {
     if (!n) return "—";
     if (n < 1024) return `${n} B`;
@@ -77,30 +88,46 @@ function Page() {
 
   return (
     <AppLayout>
-      <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] min-h-[calc(100vh-9rem)] gap-4 sm:gap-6 p-4 sm:p-6 lg:p-10 max-w-[1400px] mx-auto w-full">
-        <aside className="glass rounded-2xl p-3 sm:p-4 self-start lg:sticky lg:top-24 h-fit overflow-x-auto">
-          <div className="text-xs font-semibold uppercase tracking-wider text-white/50 px-2 py-2">Navigation</div>
-          <div className="flex lg:block gap-1.5 lg:gap-0">
-          {sections.map((s) => {
-            const Icon = s.icon;
-            return (
-              <button
-                key={s.id}
-                onClick={() => { setActive(s.id); document.getElementById(s.id)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-                className={cn(
-                  "lg:w-full flex items-center gap-2 lg:gap-3 rounded-xl px-3 py-2 lg:py-2.5 text-xs lg:text-sm font-medium transition-all group whitespace-nowrap shrink-0",
-                  active === s.id ? "bg-white/10 text-white" : "text-white/60 hover:bg-white/5 hover:text-white"
-                )}
-              >
-                <span className={cn("w-7 h-7 lg:w-8 lg:h-8 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110 shrink-0", s.gradient)}>
-                  <Icon className="w-4 h-4 text-white" />
-                </span>
-                {s.label}
-              </button>
-            );
-          })}
+      <div className="min-h-[calc(100vh-9rem)] p-4 sm:p-6 lg:p-10 max-w-[1400px] mx-auto w-full space-y-4 sm:space-y-6">
+        {/* Top nav panel */}
+        <div className="glass rounded-2xl p-3 sm:p-4 flex flex-col gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            {sections.map((s) => {
+              const Icon = s.icon;
+              return (
+                <button
+                  key={s.id}
+                  onClick={() => { setActive(s.id); document.getElementById(s.id)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
+                  className={cn(
+                    "flex items-center gap-2 rounded-xl px-3 py-2 text-xs sm:text-sm font-medium transition-all group whitespace-nowrap",
+                    active === s.id ? "bg-white/15 text-white" : "text-white/60 hover:bg-white/5 hover:text-white"
+                  )}
+                >
+                  <span className={cn("w-7 h-7 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110 shrink-0", s.gradient)}>
+                    <Icon className="w-4 h-4 text-white" />
+                  </span>
+                  {s.label}
+                </button>
+              );
+            })}
+            <div className="flex-1" />
+            <Link
+              to="/faq"
+              className="text-xs sm:text-sm text-white/60 hover:text-white underline-offset-4 hover:underline whitespace-nowrap"
+            >
+              Quick Start → FAQ
+            </Link>
           </div>
-        </aside>
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/50" />
+            <Input
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setActive("my-docs"); }}
+              placeholder="Search documents…"
+              className="pl-9 bg-white/5 border-white/15 text-white placeholder:text-white/40"
+            />
+          </div>
+        </div>
 
         <div className="hero-white p-5 sm:p-8 lg:p-12 space-y-10 sm:space-y-14 max-w-none min-w-0">
           <section id="my-docs" className="space-y-4">
@@ -142,10 +169,10 @@ function Page() {
                 <div>Created</div>
                 <div />
               </div>
-              {items.length === 0 ? (
+              {filtered.length === 0 ? (
                 <div className="p-6 text-center text-sm hero-text-muted">No documents yet. Upload one or create a folder.</div>
               ) : (
-                items.map((it) => (
+                filtered.map((it) => (
                   <div key={it.id} className="grid grid-cols-[1fr_120px_140px_40px] items-center px-4 py-2.5 text-sm hero-text border-b last:border-b-0 hero-divider hover:bg-slate-50">
                     <div className="flex items-center gap-2 min-w-0">
                       {it.kind === "folder"
@@ -168,31 +195,42 @@ function Page() {
             </div>
           </section>
 
-          <section id="quickstart" className="space-y-4">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight hero-text">Quick Start</h1>
-            <p className="hero-text-muted">Get a sandbox running in under a minute.</p>
-            <h3 className="font-semibold mt-6 hero-text">Step 1 · Get your API Key</h3>
-            <p className="text-sm hero-text-muted">Visit the API Keys page and click "Create New API Key". Save the key safely.</p>
-            <h3 className="font-semibold hero-text">Step 2 · Run code via cURL</h3>
-            <Block lang="bash" code={`curl -X POST https://api.sandboxapi.com/api/sandbox/run \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "language": "python",
-    "code": "print(\\"Hello, Locci Box!\\")"
-  }'`} />
-            <h3 className="font-semibold hero-text">Example Response</h3>
-            <Block lang="json" code={`{
-  "success": true,
-  "data": {
-    "sandbox_id": "sbox_abc123",
-    "status": "completed",
-    "stdout": "Hello, Locci Box!",
-    "stderr": "",
-    "exit_code": 0,
-    "duration_ms": 87
-  }
-}`} />
+          <section id="shared" className="space-y-4">
+            <div className="flex items-end justify-between gap-3 flex-wrap">
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight hero-text">Shared Folder</h1>
+                <p className="hero-text-muted text-sm mt-1">Documents shared across your workspace.</p>
+              </div>
+            </div>
+            <div className="rounded-xl border hero-border overflow-hidden bg-white">
+              {sharedItems.map((it) => (
+                <div key={it.id} className="flex items-center gap-3 px-4 py-2.5 text-sm hero-text border-b last:border-b-0 hero-divider hover:bg-slate-50">
+                  {it.kind === "folder"
+                    ? <Folder className="w-4 h-4 text-amber-500 shrink-0" />
+                    : <FileText className="w-4 h-4 text-blue-500 shrink-0" />}
+                  <span className="flex-1 truncate">{it.name}</span>
+                  <span className="text-xs hero-text-muted">{it.createdAt}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section id="recent" className="space-y-4">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight hero-text">Recently Added</h1>
+            <p className="hero-text-muted text-sm">Your latest uploads and folders.</p>
+            <div className="rounded-xl border hero-border overflow-hidden bg-white">
+              {recent.length === 0 ? (
+                <div className="p-6 text-center text-sm hero-text-muted">Nothing yet.</div>
+              ) : recent.map((it) => (
+                <div key={it.id} className="flex items-center gap-3 px-4 py-2.5 text-sm hero-text border-b last:border-b-0 hero-divider hover:bg-slate-50">
+                  {it.kind === "folder"
+                    ? <Folder className="w-4 h-4 text-amber-500 shrink-0" />
+                    : <FileText className="w-4 h-4 text-blue-500 shrink-0" />}
+                  <span className="flex-1 truncate">{it.name}</span>
+                  <span className="text-xs hero-text-muted">{it.createdAt}</span>
+                </div>
+              ))}
+            </div>
           </section>
 
           <section id="api" className="space-y-4">
