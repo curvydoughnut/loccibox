@@ -14,7 +14,65 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bob_messages: {
+        Row: {
+          created_at: string
+          id: string
+          role: string
+          thread_id: string
+          ui_message: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: string
+          thread_id: string
+          ui_message: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: string
+          thread_id?: string
+          ui_message?: Json
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bob_messages_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "bob_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bob_threads: {
+        Row: {
+          created_at: string
+          id: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
