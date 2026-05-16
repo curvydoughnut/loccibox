@@ -82,7 +82,7 @@ function Page() {
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">API Keys</h1>
             <p className="text-sm sm:text-base text-white/60 mt-2">Manage your API keys, rate limits, and concurrent sandbox limits.</p>
           </div>
-          <Button onClick={() => setOpen(true)} className="bg-gradient-primary text-white hover:opacity-90 h-11 px-5 shadow-primary self-start sm:self-auto">
+          <Button onClick={() => setOpen(true)} className="bg-locci-gradient hover:opacity-90 h-11 px-5 shadow-primary self-start sm:self-auto border-0" style={{ color: "#ffffff" }}>
             <Plus className="w-4 h-4 mr-2" /> Create New Key
           </Button>
         </div>
