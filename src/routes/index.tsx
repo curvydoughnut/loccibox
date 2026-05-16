@@ -26,6 +26,22 @@ function Landing() {
 
   useEffect(() => { if (user) navigate({ to: "/dashboard" }); }, [user, navigate]);
 
+  const FREE_EMAIL_DOMAINS = new Set([
+    "gmail.com","googlemail.com","yahoo.com","yahoo.co.uk","ymail.com","rocketmail.com",
+    "outlook.com","hotmail.com","hotmail.co.uk","live.com","msn.com",
+    "icloud.com","me.com","mac.com",
+    "aol.com","proton.me","protonmail.com","pm.me","gmx.com","gmx.net",
+    "mail.com","zoho.com","yandex.com","yandex.ru","tutanota.com",
+    "qq.com","163.com","126.com","sina.com","naver.com",
+  ]);
+  const isEnterpriseEmail = (value: string) => {
+    const at = value.lastIndexOf("@");
+    if (at < 0) return false;
+    const domain = value.slice(at + 1).trim().toLowerCase();
+    if (!domain || !domain.includes(".")) return false;
+    return !FREE_EMAIL_DOMAINS.has(domain);
+  };
+
   const openLogin = () => {
     setShowLogin(true);
     setTimeout(() => document.getElementById("login")?.scrollIntoView({ behavior: "smooth", block: "center" }), 50);
@@ -35,6 +51,7 @@ function Landing() {
     e.preventDefault();
     const errs: typeof errors = {};
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = "Enter a valid email";
+    else if (!isEnterpriseEmail(email)) errs.email = "Use your company email — personal accounts are not supported";
     if (password.length < 6) errs.password = "Min 6 characters";
     setErrors(errs);
     if (Object.keys(errs).length) return;
@@ -92,7 +109,7 @@ function Landing() {
             className="px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all hover:-translate-y-0.5 whitespace-nowrap"
             style={{ background: "#3b82f6", color: "#fff", boxShadow: "0 4px 12px rgba(59,130,246,0.30)" }}
           >
-            Sign Up
+            Request Access
           </button>
         </div>
       </header>
@@ -124,7 +141,7 @@ function Landing() {
               className="inline-flex items-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-lg text-sm font-semibold cursor-not-allowed opacity-70"
               style={{ background: "#fff", color: "#4a5ed8", border: "2px solid #fff" }}
             >
-              Sign Up Free <ArrowRight className="w-4 h-4" />
+              Request Enterprise Access <ArrowRight className="w-4 h-4" />
             </button>
             <button
               onClick={enterDemo}
@@ -148,17 +165,17 @@ function Landing() {
           className={`${showLogin ? "block" : "hidden"} lg:block rounded-2xl p-6 sm:p-8 animate-scale`}
           style={{ background: "rgba(45,74,105,0.28)", border: "1px solid rgba(255,255,255,0.18)", backdropFilter: "blur(8px)" }}
         >
-          <h2 className="text-2xl font-bold tracking-tight" style={{ color: "#fff" }}>Access Sandbox</h2>
-          <p className="text-sm mt-1.5" style={{ color: "rgba(255,255,255,0.72)" }}>Enter your credentials to manage microVMs.</p>
+          <h2 className="text-2xl font-bold tracking-tight" style={{ color: "#fff" }}>Enterprise Access</h2>
+          <p className="text-sm mt-1.5" style={{ color: "rgba(255,255,255,0.72)" }}>For organizations only. Sign in with your corporate email — personal accounts aren't supported.</p>
 
           <form onSubmit={submit} className="mt-6 space-y-4">
             <div>
-              <label className="block text-xs font-semibold mb-1.5" style={{ color: "#fff" }}>Email Address</label>
+              <label className="block text-xs font-semibold mb-1.5" style={{ color: "#fff" }}>Work Email</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
                 <input
                   type="email" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={255}
-                  placeholder="admin@enterprise.com"
+                  placeholder="you@company.com"
                   className="w-full pl-10 pr-3 py-3 rounded-lg text-sm outline-none transition-colors"
                   style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.22)", color: "#fff" }}
                 />
