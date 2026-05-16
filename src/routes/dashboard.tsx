@@ -88,6 +88,8 @@ function Page() {
   const { user } = useAuth();
   if (!user) return <Navigate to="/" />;
 
+  const visibleSandboxes = user.isDemo ? teamSandboxes.slice(0, 2) : teamSandboxes;
+
   return (
     <AppLayout>
       <div className="p-4 sm:p-6 lg:p-10 space-y-6 sm:space-y-8 max-w-7xl mx-auto w-full">
@@ -175,7 +177,7 @@ function Page() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
-            {teamSandboxes.map((sb) => {
+            {visibleSandboxes.map((sb) => {
               const Icon = sb.icon;
               return (
                 <Link
