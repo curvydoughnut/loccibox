@@ -103,7 +103,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </button>
           <button className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full glass glass-hover flex items-center justify-center">
             <Bell className="w-4 h-4 text-cyan" />
-            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-gradient-orange-red" />
+            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500" />
           </button>
           <div className="hidden lg:block text-right max-w-[180px]">
             <div className="text-xs text-white/60 truncate">{user?.email}</div>
