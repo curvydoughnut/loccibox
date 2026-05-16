@@ -37,6 +37,13 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <>
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
               <span><span className="font-bold">Demo Mode</span> — every feature unlocked, sample data, no signup needed.</span>
+              <button
+                onClick={handleLogout}
+                className="ml-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[11px] font-semibold transition-colors"
+              >
+                <X className="w-3 h-3" />
+                Exit demo
+              </button>
             </>
           ) : (
             <>
