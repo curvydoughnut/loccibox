@@ -1,13 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HelpCircle, MessageSquare, BookOpen, Mail, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
 export function FloatingHelp() {
   const [open, setOpen] = useState(false);
+  const [liftPx, setLiftPx] = useState(0);
+
+  useEffect(() => {
+    const compute = () => {
+      const footer = document.querySelector("footer");
+      if (!footer) return setLiftPx(0);
+      const rect = footer.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // How many px of the footer are visible above the viewport bottom
+      const overlap = Math.max(0, vh - rect.top);
+      setLiftPx(overlap > 0 ? overlap + 12 : 0);
+    };
+    compute();
+    window.addEventListener("scroll", compute, { passive: true });
+    window.addEventListener("resize", compute);
+    return () => {
+      window.removeEventListener("scroll", compute);
+      window.removeEventListener("resize", compute);
+    };
+  }, []);
 
   return (
-    <div className="fixed bottom-5 right-5 sm:bottom-7 sm:right-7 z-50">
+    <div
+      className="fixed right-5 sm:right-7 z-50 transition-[bottom] duration-200 ease-out"
+      style={{ bottom: `calc(1.25rem + ${liftPx}px)` }}
+    >
       {/* Popover panel */}
       <div
         className={cn(
