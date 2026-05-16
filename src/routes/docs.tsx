@@ -1,12 +1,14 @@
-import { createFileRoute, Navigate, Link } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { useAuth } from "@/lib/auth";
-import { BookOpen, Lock, Split, Code2, Copy, Upload, FolderPlus, Folder, FileText, Trash2, FileUp, Search, Users, Clock } from "lucide-react";
+import { BookOpen, Lock, Split, Code2, Copy, Upload, FolderPlus, Folder, FileText, Trash2, FileUp, Search, Users, Clock, MoreVertical, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/docs")({
   head: () => ({ meta: [{ title: "Documentation — Locci Box" }] }),
@@ -40,6 +42,7 @@ function Block({ code, lang }: { code: string; lang?: string }) {
 function Page() {
   const { user } = useAuth();
   if (!user) return <Navigate to="/" />;
+  const navigate = useNavigate();
   const [active, setActive] = useState("my-docs");
   const [search, setSearch] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
@@ -113,12 +116,21 @@ function Page() {
               );
             })}
             <div className="flex-1" />
-            <Link
-              to="/faq"
-              className="text-xs sm:text-sm text-white/60 hover:text-white underline-offset-4 hover:underline whitespace-nowrap"
-            >
-              Quick Start → FAQ
-            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="w-9 h-9 rounded-lg flex items-center justify-center text-white/60 hover:text-white hover:bg-white/5 transition-colors"
+                  aria-label="More options"
+                >
+                  <MoreVertical className="w-4 h-4" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-44">
+                <DropdownMenuItem onClick={() => navigate({ to: "/settings" })}>
+                  <Settings className="w-4 h-4 mr-2" /> Settings
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div
             className={cn(
