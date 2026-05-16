@@ -185,7 +185,8 @@ function Page() {
 
   return (
     <AppLayout>
-      <div className="p-3 sm:p-4 lg:p-6 max-w-[1600px] mx-auto w-full">
+      <div className="bg-locci-gradient">
+        <div className="p-3 sm:p-4 lg:p-6 max-w-[1600px] mx-auto w-full">
 
         {/* IDE shell */}
         <div className="hero-white overflow-hidden flex flex-col lg:flex-row h-[calc(100vh-9rem)] min-h-[640px] rounded-xl border border-slate-200 shadow-sm animate-fade-up">
@@ -383,7 +384,8 @@ function Page() {
                     />
                   </div>
                 </div>
-              </div>
+        </div>
+      </div>
             </div>
           </div>
         </div>
