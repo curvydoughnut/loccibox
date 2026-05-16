@@ -4,6 +4,7 @@ import { LayoutDashboard, Code2, KeyRound, BookOpen, LogOut, Boxes, Bell, Github
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { FloatingHelp } from "@/components/FloatingHelp";
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, gradient: "bg-gradient-cyan-blue" },
@@ -210,6 +211,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <Link to="/docs" className="text-white/60 hover:text-white">Docs</Link>
         </div>
       </footer>
+      <FloatingHelp />
     </div>
   );
 }
