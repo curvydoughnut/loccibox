@@ -3,14 +3,14 @@ import { useEffect, useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
 import { AppLayout } from "@/components/AppLayout";
 import { useAuth } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Play, Save, Share2, Download, FileCode2, Plus, X, Folder, FolderOpen,
-  FileText, Loader2, Terminal, Sparkles, GitBranch, Clock, Cpu,
+  FileText, Loader2, Terminal, Sparkles, GitBranch, Clock, Cpu, Command,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/code")({
   head: () => ({ meta: [{ title: "Code Editor — Locci Box" }] }),
@@ -99,17 +99,16 @@ const sampleOutput = (lang: Lang): string => {
 
 function Page() {
   const { user } = useAuth();
-  if (!user) return <Navigate to="/" />;
-
   const [files, setFiles] = useState<FileEntry[]>(seed);
   const [activeId, setActiveId] = useState<string>(seed[0].id);
   const [running, setRunning] = useState(false);
   const [output, setOutput] = useState<{ stdout: string; ms: number; exit: number } | null>(null);
   const [autosave, setAutosave] = useState(true);
   const [savedAt, setSavedAt] = useState<string | null>("just now");
+  const [paletteOpen, setPaletteOpen] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const active = files.find((f) => f.id === activeId)!;
+  const active = files.find((f) => f.id === activeId) ?? files[0];
 
   const updateContent = (val: string) => {
     setFiles((fs) => fs.map((f) => (f.id === activeId ? { ...f, content: val } : f)));
@@ -174,10 +173,13 @@ function Page() {
     const h = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); run(); }
       if ((e.metaKey || e.ctrlKey) && e.key === "s") { e.preventDefault(); save(); }
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); setPaletteOpen((v) => !v); }
     };
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
   });
+
+  if (!user) return <Navigate to="/" />;
 
   return (
     <AppLayout>
@@ -194,7 +196,7 @@ function Page() {
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">
-              Code <span className="text-gradient-primary">Editor</span>
+              <span className="text-gradient-primary">Code</span>
             </h1>
             <p className="text-sm sm:text-base text-white/60 mt-2">
               Write, save, and run code in a persistent isolated microVM. Multi-file projects, instant execution.
@@ -211,14 +213,31 @@ function Page() {
                 <SelectItem value="ruby">Ruby</SelectItem>
               </SelectContent>
             </Select>
-            <Button
+            <button
               onClick={run}
               disabled={running}
-              className="bg-gradient-primary text-white hover:opacity-90 shadow-primary"
+              title="Run code (⌘/Ctrl + Enter)"
+              aria-label="Run code"
+              className="w-10 h-10 rounded-lg bg-gradient-primary text-white hover:opacity-90 shadow-primary flex items-center justify-center disabled:opacity-60"
             >
-              {running ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2" />}
-              {running ? "Running..." : "Run"}
-            </Button>
+              {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
+            </button>
+            <button
+              onClick={save}
+              title="Save file (⌘/Ctrl + S)"
+              aria-label="Save file"
+              className="w-10 h-10 rounded-lg glass glass-hover border border-white/15 text-white flex items-center justify-center"
+            >
+              <Save className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setPaletteOpen(true)}
+              title="Command palette (⌘/Ctrl + K)"
+              aria-label="Command palette"
+              className="w-10 h-10 rounded-lg glass glass-hover border border-white/15 text-white flex items-center justify-center"
+            >
+              <Command className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
@@ -296,15 +315,12 @@ function Page() {
               ))}
               <div className="flex-1" />
               <div className="flex items-center gap-1 px-2">
-                <Button size="sm" variant="ghost" onClick={save} className="h-8 hero-text hover:bg-slate-100">
-                  <Save className="w-3.5 h-3.5 mr-1.5" /> Save
-                </Button>
-                <Button size="sm" variant="ghost" onClick={share} className="h-8 hero-text hover:bg-slate-100">
-                  <Share2 className="w-3.5 h-3.5 mr-1.5" /> Share
-                </Button>
-                <Button size="sm" variant="ghost" onClick={download} className="h-8 hero-text hover:bg-slate-100">
+                <button onClick={share} title="Share file" aria-label="Share file" className="w-8 h-8 rounded-md hero-text hover:bg-slate-100 flex items-center justify-center">
+                  <Share2 className="w-3.5 h-3.5" />
+                </button>
+                <button onClick={download} title="Download file" aria-label="Download file" className="w-8 h-8 rounded-md hero-text hover:bg-slate-100 flex items-center justify-center">
                   <Download className="w-3.5 h-3.5" />
-                </Button>
+                </button>
               </div>
             </div>
 
@@ -319,6 +335,7 @@ function Page() {
                   beforeMount={defineLightTheme}
                   onChange={(v) => updateContent(v ?? "")}
                   options={{
+                    readOnly: false,
                     fontSize: 13,
                     fontFamily: "Monaco, 'Courier New', monospace",
                     minimap: { enabled: true },
@@ -367,22 +384,35 @@ function Page() {
           </div>
         </div>
 
-        {/* Tips */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 animate-fade-up" style={{ animationDelay: "200ms" }}>
-          {[
-            { kbd: "⌘ ↵", label: "Run code", grad: "bg-gradient-cyan-blue" },
-            { kbd: "⌘ S", label: "Save file", grad: "bg-gradient-purple-pink" },
-            { kbd: "⌘ K", label: "Command palette", grad: "bg-gradient-teal-green" },
-          ].map((t) => (
-            <div key={t.label} className="glass glass-hover rounded-xl p-4 flex items-center gap-3">
-              <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center font-mono text-xs font-bold text-white shadow-lg", t.grad)}>
-                {t.kbd}
-              </div>
-              <div className="text-sm font-medium">{t.label}</div>
-            </div>
-          ))}
-        </div>
       </div>
+
+      {/* Command palette */}
+      <Dialog open={paletteOpen} onOpenChange={setPaletteOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><Command className="w-4 h-4" /> Command palette</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-1">
+            {[
+              { icon: Play, label: "Run code", kbd: "⌘ ↵", action: () => { setPaletteOpen(false); run(); } },
+              { icon: Save, label: "Save file", kbd: "⌘ S", action: () => { setPaletteOpen(false); save(); } },
+              { icon: Plus, label: "New file", kbd: "", action: () => { setPaletteOpen(false); newFile(); } },
+              { icon: Share2, label: "Share file", kbd: "", action: () => { setPaletteOpen(false); share(); } },
+              { icon: Download, label: "Download file", kbd: "", action: () => { setPaletteOpen(false); download(); } },
+            ].map((c) => (
+              <button
+                key={c.label}
+                onClick={c.action}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm hover:bg-slate-100 text-left"
+              >
+                <c.icon className="w-4 h-4 text-blue-500" />
+                <span className="flex-1">{c.label}</span>
+                {c.kbd && <span className="text-xs font-mono text-slate-400">{c.kbd}</span>}
+              </button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </AppLayout>
   );
 }
