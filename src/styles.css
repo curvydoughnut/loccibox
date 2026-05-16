@@ -153,7 +153,15 @@
 
 @layer utilities {
   /* Brand gradients — blue family */
-  .bg-gradient-primary { background-image: var(--gradient-primary); }
+  .bg-gradient-primary {
+    background-color: #6b73e8;
+    background-image:
+      radial-gradient(ellipse 60% 55% at 50% 50%, rgba(132, 196, 140, 0.55), transparent 60%),
+      radial-gradient(ellipse 80% 70% at 20% 30%, rgba(99, 102, 241, 0.45), transparent 65%),
+      radial-gradient(ellipse 70% 60% at 85% 80%, rgba(120, 130, 230, 0.5), transparent 60%),
+      linear-gradient(135deg, #5b6ee0 0%, #7a82e8 100%);
+    color: #ffffff;
+  }
   .bg-gradient-cyan-blue,
   .bg-gradient-purple-pink,
   .bg-gradient-teal-green,
