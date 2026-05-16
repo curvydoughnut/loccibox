@@ -183,6 +183,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <a href="#" className="w-8 h-8 rounded-lg glass glass-hover flex items-center justify-center"><Github className="w-3.5 h-3.5 text-cyan" /></a>
           <a href="#" className="w-8 h-8 rounded-lg glass glass-hover flex items-center justify-center"><Twitter className="w-3.5 h-3.5 text-cyan" /></a>
           <Link to="/docs" className="text-white/60 hover:text-white">Docs</Link>
+          <Link to="/faq" className="text-white/60 hover:text-white">FAQ</Link>
         </div>
       </footer>
       <FloatingHelp />
