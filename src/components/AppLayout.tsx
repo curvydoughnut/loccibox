@@ -58,7 +58,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           boxShadow: "0 1px 0 rgba(255,255,255,0.5) inset, 0 2px 12px rgba(15,42,75,0.04)",
         }}
       >
-        <Link to="/dashboard" className="flex items-center gap-2 sm:gap-3 group min-w-0">
+        <Link to={user?.isDemo ? "/" : "/dashboard"} className="flex items-center gap-2 sm:gap-3 group min-w-0">
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-primary transition-transform group-hover:scale-105 shrink-0">
             <Boxes className="w-5 h-5 text-white" />
           </div>
