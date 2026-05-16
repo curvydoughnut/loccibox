@@ -15,6 +15,7 @@ import { Route as DocsRouteImport } from './routes/docs'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CodeRouteImport } from './routes/code'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiBobRouteImport } from './routes/api/bob'
 
 const PlaygroundRoute = PlaygroundRouteImport.update({
   id: '/playground',
@@ -46,6 +47,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiBobRoute = ApiBobRouteImport.update({
+  id: '/api/bob',
+  path: '/api/bob',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/docs': typeof DocsRoute
   '/keys': typeof KeysRoute
   '/playground': typeof PlaygroundRoute
+  '/api/bob': typeof ApiBobRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/docs': typeof DocsRoute
   '/keys': typeof KeysRoute
   '/playground': typeof PlaygroundRoute
+  '/api/bob': typeof ApiBobRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,12 +79,27 @@ export interface FileRoutesById {
   '/docs': typeof DocsRoute
   '/keys': typeof KeysRoute
   '/playground': typeof PlaygroundRoute
+  '/api/bob': typeof ApiBobRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/code' | '/dashboard' | '/docs' | '/keys' | '/playground'
+  fullPaths:
+    | '/'
+    | '/code'
+    | '/dashboard'
+    | '/docs'
+    | '/keys'
+    | '/playground'
+    | '/api/bob'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/code' | '/dashboard' | '/docs' | '/keys' | '/playground'
+  to:
+    | '/'
+    | '/code'
+    | '/dashboard'
+    | '/docs'
+    | '/keys'
+    | '/playground'
+    | '/api/bob'
   id:
     | '__root__'
     | '/'
@@ -85,6 +108,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/keys'
     | '/playground'
+    | '/api/bob'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -94,6 +118,7 @@ export interface RootRouteChildren {
   DocsRoute: typeof DocsRoute
   KeysRoute: typeof KeysRoute
   PlaygroundRoute: typeof PlaygroundRoute
+  ApiBobRoute: typeof ApiBobRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -140,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/bob': {
+      id: '/api/bob'
+      path: '/api/bob'
+      fullPath: '/api/bob'
+      preLoaderRoute: typeof ApiBobRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -150,7 +182,18 @@ const rootRouteChildren: RootRouteChildren = {
   DocsRoute: DocsRoute,
   KeysRoute: KeysRoute,
   PlaygroundRoute: PlaygroundRoute,
+  ApiBobRoute: ApiBobRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
