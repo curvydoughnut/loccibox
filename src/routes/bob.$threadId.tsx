@@ -170,7 +170,9 @@ function ChatBody({
       </Conversation>
 
       <div className="border-t border-[#e0f2fe] p-4 bg-white">
+        <div className="bg-locci-gradient p-[2px] rounded-xl">
         <PromptInput
+          className="bg-white rounded-[10px]"
           onSubmit={(message) => {
             const text = message.text?.trim() ?? draft.trim();
             if (!text || isLoading) return;
@@ -189,6 +191,7 @@ function ChatBody({
             <PromptInputSubmit status={status} disabled={isLoading || draft.trim().length === 0} />
           </PromptInputFooter>
         </PromptInput>
+        </div>
       </div>
     </div>
   );
