@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
-import { Boxes, ArrowRight, BookOpen, Layers, Shield, Server, Github, Twitter, Mail, Lock, Loader2 } from "lucide-react";
+import { Boxes, ArrowRight, BookOpen, Layers, Shield, Server, Mail, Lock, Loader2, Github, Twitter } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
