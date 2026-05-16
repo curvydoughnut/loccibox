@@ -118,8 +118,10 @@ function Landing() {
           </p>
           <div className="flex flex-wrap gap-3 pt-2">
             <button
-              onClick={openLogin}
-              className="inline-flex items-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-lg text-sm font-semibold transition-all hover:-translate-y-0.5"
+              type="button"
+              disabled
+              aria-disabled="true"
+              className="inline-flex items-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-lg text-sm font-semibold cursor-not-allowed opacity-70"
               style={{ background: "#fff", color: "#4a5ed8", border: "2px solid #fff" }}
             >
               Sign Up Free <ArrowRight className="w-4 h-4" />
