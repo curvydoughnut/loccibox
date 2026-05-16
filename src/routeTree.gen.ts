@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as PlaygroundRouteImport } from './routes/playground'
 import { Route as KeysRouteImport } from './routes/keys'
 import { Route as FaqRouteImport } from './routes/faq'
@@ -20,6 +21,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as BobThreadIdRouteImport } from './routes/bob.$threadId'
 import { Route as ApiBobRouteImport } from './routes/api/bob'
 
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlaygroundRoute = PlaygroundRouteImport.update({
   id: '/playground',
   path: '/playground',
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/keys': typeof KeysRoute
   '/playground': typeof PlaygroundRoute
+  '/settings': typeof SettingsRoute
   '/api/bob': typeof ApiBobRoute
   '/bob/$threadId': typeof BobThreadIdRoute
 }
@@ -92,6 +99,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/keys': typeof KeysRoute
   '/playground': typeof PlaygroundRoute
+  '/settings': typeof SettingsRoute
   '/api/bob': typeof ApiBobRoute
   '/bob/$threadId': typeof BobThreadIdRoute
 }
@@ -105,6 +113,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/keys': typeof KeysRoute
   '/playground': typeof PlaygroundRoute
+  '/settings': typeof SettingsRoute
   '/api/bob': typeof ApiBobRoute
   '/bob/$threadId': typeof BobThreadIdRoute
 }
@@ -119,6 +128,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/keys'
     | '/playground'
+    | '/settings'
     | '/api/bob'
     | '/bob/$threadId'
   fileRoutesByTo: FileRoutesByTo
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/keys'
     | '/playground'
+    | '/settings'
     | '/api/bob'
     | '/bob/$threadId'
   id:
@@ -143,6 +154,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/keys'
     | '/playground'
+    | '/settings'
     | '/api/bob'
     | '/bob/$threadId'
   fileRoutesById: FileRoutesById
@@ -156,11 +168,19 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   KeysRoute: typeof KeysRoute
   PlaygroundRoute: typeof PlaygroundRoute
+  SettingsRoute: typeof SettingsRoute
   ApiBobRoute: typeof ApiBobRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/playground': {
       id: '/playground'
       path: '/playground'
@@ -253,8 +273,19 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   KeysRoute: KeysRoute,
   PlaygroundRoute: PlaygroundRoute,
+  SettingsRoute: SettingsRoute,
   ApiBobRoute: ApiBobRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
