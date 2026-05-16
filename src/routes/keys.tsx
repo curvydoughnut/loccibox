@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/keys")({
-  head: () => ({ meta: [{ title: "API Keys — SandboxAPI" }] }),
+  head: () => ({ meta: [{ title: "API Keys — Locci Box" }] }),
   component: Page,
 });
 

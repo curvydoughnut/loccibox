@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/docs")({
-  head: () => ({ meta: [{ title: "Documentation — SandboxAPI" }] }),
+  head: () => ({ meta: [{ title: "Documentation — Locci Box" }] }),
   component: Page,
 });
 
@@ -78,7 +78,7 @@ function Page() {
   -H "Content-Type: application/json" \\
   -d '{
     "language": "python",
-    "code": "print(\\"Hello, SandboxAPI!\\")"
+    "code": "print(\\"Hello, Locci Box!\\")"
   }'`} />
             <h3 className="font-semibold hero-text">Example Response</h3>
             <Block lang="json" code={`{
@@ -86,7 +86,7 @@ function Page() {
   "data": {
     "sandbox_id": "sbox_abc123",
     "status": "completed",
-    "stdout": "Hello, SandboxAPI!",
+    "stdout": "Hello, Locci Box!",
     "stderr": "",
     "exit_code": 0,
     "duration_ms": 87

@@ -50,7 +50,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-primary transition-transform group-hover:scale-105 shrink-0">
             <Boxes className="w-5 h-5 text-white" />
           </div>
-          <span className="font-bold tracking-tight text-base sm:text-lg truncate">SandboxAPI</span>
+          <span className="font-bold tracking-tight text-base sm:text-lg truncate">Locci Box</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
@@ -153,7 +153,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
       {/* Footer */}
       <footer className="px-4 sm:px-6 lg:px-10 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 glass border-x-0 border-b-0 text-xs">
-        <div className="text-white/50">© SandboxAPI 2026</div>
+        <div className="text-white/50">© Locci Box 2026</div>
         <div className="flex items-center gap-2 text-white/70">
           <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
           All systems operational

@@ -9,7 +9,7 @@ import { Play, RotateCcw, Check, AlertTriangle, Loader2, Clock, Code2, FlaskConi
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/playground")({
-  head: () => ({ meta: [{ title: "Dual Sandbox Playground — SandboxAPI" }] }),
+  head: () => ({ meta: [{ title: "Dual Sandbox Playground — Locci Box" }] }),
   component: Page,
 });
 
