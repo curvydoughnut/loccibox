@@ -42,6 +42,8 @@ function Page() {
   if (!user) return <Navigate to="/" />;
   const [active, setActive] = useState("my-docs");
   const [search, setSearch] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   type DocItem = { id: string; name: string; kind: "folder" | "file"; size?: number; createdAt: string };
   const [items, setItems] = useState<DocItem[]>([
@@ -118,13 +120,31 @@ function Page() {
               Quick Start → FAQ
             </Link>
           </div>
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/50" />
+          <div
+            className={cn(
+              "relative flex items-center bg-white/5 border border-white/15 rounded-md transition-all duration-300 ease-out overflow-hidden",
+              (searchFocused || search) ? "w-full sm:w-80" : "w-9"
+            )}
+          >
+            <button
+              type="button"
+              onClick={() => { setSearchFocused(true); setTimeout(() => searchInputRef.current?.focus(), 50); }}
+              className="w-9 h-9 flex items-center justify-center text-white/60 hover:text-white shrink-0"
+              aria-label="Search documents"
+            >
+              <Search className="w-4 h-4" />
+            </button>
             <Input
+              ref={searchInputRef}
               value={search}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
               onChange={(e) => { setSearch(e.target.value); setActive("my-docs"); }}
               placeholder="Search documents…"
-              className="pl-9 bg-white/5 border-white/15 text-white placeholder:text-white/40"
+              className={cn(
+                "h-9 border-0 bg-transparent text-white placeholder:text-white/40 px-0 focus-visible:ring-0 focus-visible:ring-offset-0 transition-opacity duration-200",
+                (searchFocused || search) ? "opacity-100 w-full pr-3" : "opacity-0 w-0 p-0"
+              )}
             />
           </div>
         </div>
