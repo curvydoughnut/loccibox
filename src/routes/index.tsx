@@ -22,8 +22,14 @@ function Landing() {
   const [remember, setRemember] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [submitting, setSubmitting] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => { if (user) navigate({ to: "/dashboard" }); }, [user, navigate]);
+
+  const openLogin = () => {
+    setShowLogin(true);
+    setTimeout(() => document.getElementById("login")?.scrollIntoView({ behavior: "smooth", block: "center" }), 50);
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,37 +67,39 @@ function Landing() {
     <div className="min-h-screen w-full" style={{ background: "#e8f4f9" }}>
       {/* Top Nav */}
       <header
-        className="mx-auto max-w-[1400px] flex items-center justify-between px-6 sm:px-10 h-20 rounded-2xl mt-4"
+        className="mx-auto max-w-[1400px] flex items-center justify-between px-4 sm:px-6 md:px-10 h-16 sm:h-20 rounded-2xl mt-3 sm:mt-4"
         style={{ background: "#ffffff", boxShadow: "0 2px 8px rgba(15,42,75,0.06)" }}
       >
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: "linear-gradient(135deg,#4a5ed8,#6b7fd9)" }}>
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: "linear-gradient(135deg,#4a5ed8,#6b7fd9)" }}>
             <Boxes className="w-5 h-5" style={{ color: "#fff" }} />
           </div>
-          <span className="font-bold tracking-tight text-lg" style={{ color: "#1a3a52" }}>Locci Box</span>
+          <span className="font-bold tracking-tight text-base sm:text-lg truncate" style={{ color: "#1a3a52" }}>Locci Box</span>
         </div>
 
-        <nav className="hidden md:flex items-center gap-10 text-sm font-medium" style={{ color: "#1a3a52" }}>
+        <nav className="hidden lg:flex items-center gap-10 text-sm font-medium" style={{ color: "#1a3a52" }}>
           <a href="#" className="hover:opacity-70">Documentation</a>
           <a href="#" className="hover:opacity-70">Pricing</a>
           <a href="#" className="hover:opacity-70">Use Cases</a>
         </nav>
 
-        <div className="flex items-center gap-5">
-          <a href="#login" className="text-sm font-medium hidden sm:inline" style={{ color: "#1a3a52" }}>Sign In</a>
+        <div className="flex items-center gap-2 sm:gap-4">
+          <button onClick={openLogin} className="text-sm font-medium px-2 py-1" style={{ color: "#1a3a52" }}>
+            Sign In
+          </button>
           <button
-            onClick={() => document.getElementById("login")?.scrollIntoView({ behavior: "smooth" })}
-            className="px-5 py-2.5 rounded-lg text-sm font-semibold transition-all hover:-translate-y-0.5"
+            onClick={openLogin}
+            className="px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all hover:-translate-y-0.5 whitespace-nowrap"
             style={{ background: "#3b82f6", color: "#fff", boxShadow: "0 4px 12px rgba(59,130,246,0.30)" }}
           >
-            Get Started
+            Sign Up
           </button>
         </div>
       </header>
 
       {/* Hero */}
       <section
-        className="mx-auto max-w-[1400px] mt-8 rounded-[28px] px-8 sm:px-14 py-14 sm:py-20 grid lg:grid-cols-2 gap-12 items-center"
+        className="mx-auto max-w-[1400px] mt-6 sm:mt-8 rounded-2xl sm:rounded-[28px] px-6 sm:px-10 lg:px-14 py-10 sm:py-14 lg:py-20 grid lg:grid-cols-2 gap-10 lg:gap-12 items-center"
         style={{ background: "linear-gradient(135deg,#4a5ed8,#6b7fd9)" }}
       >
         <div className="space-y-7 animate-fade-up">
@@ -102,34 +110,40 @@ function Landing() {
             <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#fff" }} />
             V2.0 ARCHITECTURE LIVE
           </div>
-          <h1 className="text-5xl sm:text-6xl font-bold leading-[1.05] tracking-tight" style={{ color: "#fff" }}>
-            Every agent deserves<br />its own computer
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight" style={{ color: "#fff" }}>
+            Every agent deserves its own computer
           </h1>
-          <p className="text-base sm:text-lg max-w-xl leading-relaxed" style={{ color: "rgba(255,255,255,0.88)" }}>
+          <p className="text-sm sm:text-base lg:text-lg max-w-xl leading-relaxed" style={{ color: "rgba(255,255,255,0.88)" }}>
             Hardware-isolated microVMs for safe code execution. Deploy untrusted workloads with zero-trust infrastructure in milliseconds.
           </p>
           <div className="flex flex-wrap gap-3 pt-2">
             <button
-              onClick={() => document.getElementById("login")?.scrollIntoView({ behavior: "smooth" })}
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg text-sm font-semibold transition-all hover:-translate-y-0.5"
+              onClick={openLogin}
+              className="inline-flex items-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-lg text-sm font-semibold transition-all hover:-translate-y-0.5"
               style={{ background: "#fff", color: "#4a5ed8", border: "2px solid #fff" }}
             >
-              Start Building Free <ArrowRight className="w-4 h-4" />
+              Sign Up Free <ArrowRight className="w-4 h-4" />
             </button>
             <button
               onClick={enterDemo}
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg text-sm font-semibold transition-all"
+              className="inline-flex items-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-lg text-sm font-semibold transition-all"
               style={{ background: "rgba(255,255,255,0.18)", color: "#fff", border: "1px solid rgba(255,255,255,0.4)" }}
             >
               <BookOpen className="w-4 h-4" /> Demo
             </button>
           </div>
+          <p className="text-xs lg:hidden" style={{ color: "rgba(255,255,255,0.8)" }}>
+            Already have an account?{" "}
+            <button onClick={openLogin} className="underline font-semibold" style={{ color: "#fff" }}>
+              Sign in
+            </button>
+          </p>
         </div>
 
-        {/* Login card */}
+        {/* Login card — always visible on desktop; togglable on mobile/tablet */}
         <div
           id="login"
-          className="rounded-2xl p-8 animate-scale"
+          className={`${showLogin ? "block" : "hidden"} lg:block rounded-2xl p-6 sm:p-8 animate-scale`}
           style={{ background: "rgba(45,74,105,0.28)", border: "1px solid rgba(255,255,255,0.18)", backdropFilter: "blur(8px)" }}
         >
           <h2 className="text-2xl font-bold tracking-tight" style={{ color: "#fff" }}>Access Sandbox</h2>
