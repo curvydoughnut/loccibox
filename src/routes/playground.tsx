@@ -358,31 +358,17 @@ function Page() {
           </div>
         </div>
 
-        {/* Post-run split prompt */}
-        {run !== "idle" && run !== "running" && !splitOpen && (
-          <div className="flex justify-center animate-fade-up">
-            <Button
-              onClick={openSplit}
-              variant="outline"
-              className="h-10 hero-text border-slate-200 hover:bg-slate-100"
-            >
-              <SplitSquareHorizontal className="w-4 h-4 mr-2" />
-              Split screen — test another code
-            </Button>
-          </div>
-        )}
-
-        {/* Secondary sandbox */}
-        {splitOpen && (
-          <div className="animate-fade-up space-y-3">
+        {/* Additional sandboxes */}
+        {sandboxes.map((sb, i) => (
+          <div key={sb.id} className="animate-fade-up space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-sm font-semibold hero-text">
                 <SplitSquareHorizontal className="w-4 h-4 text-blue-500" />
-                Secondary sandbox
+                Sandbox {String.fromCharCode(66 + i)}
                 <span className="text-xs hero-text-muted font-normal">— independent microVM</span>
               </div>
               <button
-                onClick={() => setSplitOpen(false)}
+                onClick={() => removeSandbox(sb.id)}
                 className="inline-flex items-center gap-1 text-xs hero-text-muted hover:hero-text"
               >
                 <X className="w-3.5 h-3.5" /> Close
@@ -394,15 +380,15 @@ function Page() {
                   <div className="w-7 h-7 rounded-lg bg-gradient-cyan-blue flex items-center justify-center">
                     <Code2 className="w-3.5 h-3.5 text-white" />
                   </div>
-                  <div className="text-sm font-semibold hero-text">Code · B</div>
+                  <div className="text-sm font-semibold hero-text">Code · {String.fromCharCode(66 + i)}</div>
                 </div>
                 <div className="flex-1 min-h-0">
                   <Editor
                     height="100%"
                     language={monacoLang[lang]}
                     theme="sandbox-light"
-                    value={code2}
-                    onChange={(v) => setCode2(v ?? "")}
+                    value={sb.code}
+                    onChange={(v) => updateSandbox(sb.id, { code: v ?? "" })}
                     beforeMount={defineLightTheme}
                     options={editorOptions}
                   />
@@ -414,9 +400,9 @@ function Page() {
                     <div className="w-7 h-7 rounded-lg bg-gradient-purple-pink flex items-center justify-center">
                       <FlaskConical className="w-3.5 h-3.5 text-white" />
                     </div>
-                    <div className="text-sm font-semibold hero-text">Test Code · B</div>
+                    <div className="text-sm font-semibold hero-text">Test Code · {String.fromCharCode(66 + i)}</div>
                   </div>
-                  <RunBadge state={run2} />
+                  <RunBadge state={sb.run} />
                 </div>
                 <div className="flex-1 min-h-0 grid grid-rows-[1.4fr_1fr]">
                   <div className="border-b hero-divider min-h-0">
@@ -424,8 +410,8 @@ function Page() {
                       height="100%"
                       language={monacoLang[lang]}
                       theme="sandbox-light"
-                      value={tests2}
-                      onChange={(v) => setTests2(v ?? "")}
+                      value={sb.tests}
+                      onChange={(v) => updateSandbox(sb.id, { tests: v ?? "" })}
                       beforeMount={defineLightTheme}
                       options={editorOptions}
                     />
@@ -433,30 +419,30 @@ function Page() {
                   <div className="hero-soft flex flex-col min-h-0">
                     <div className="px-4 py-2 border-b hero-divider text-xs hero-text-muted font-medium">Output</div>
                     <pre className="flex-1 min-h-0 overflow-auto p-4 font-mono text-xs leading-relaxed hero-text">
-                      {run2 === "running" && <span className="text-blue-500">Running in sandbox...</span>}
-                      {output2 && (
+                      {sb.run === "running" && <span className="text-blue-500">Running in sandbox...</span>}
+                      {sb.output && (
                         <>
-                          {output2.stdout && <span>{output2.stdout}</span>}
-                          {output2.stderr && <span className="text-red-500">{output2.stderr}</span>}
-                          <span className="hero-text-muted">{"\n"}exit code: {output2.exit} · {output2.ms}ms</span>
+                          {sb.output.stdout && <span>{sb.output.stdout}</span>}
+                          {sb.output.stderr && <span className="text-red-500">{sb.output.stderr}</span>}
+                          <span className="hero-text-muted">{"\n"}exit code: {sb.output.exit} · {sb.output.ms}ms</span>
                         </>
                       )}
-                      {!output2 && run2 === "idle" && <span className="hero-text-muted">Press Run Tests to execute.</span>}
+                      {!sb.output && sb.run === "idle" && <span className="hero-text-muted">Press Run Tests to execute.</span>}
                     </pre>
                   </div>
                 </div>
                 <div className="px-4 py-3 border-t hero-divider flex items-center gap-2 hero-soft">
                   <Button
-                    onClick={runTests2}
-                    disabled={run2 === "running" || !tests2.trim()}
+                    onClick={() => runSandbox(sb.id)}
+                    disabled={sb.run === "running" || !sb.tests.trim()}
                     className="bg-gradient-primary text-white hover:opacity-90 h-10 shadow-primary"
                   >
-                    {run2 === "running" ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2" />}
-                    {run2 === "running" ? "Running..." : "Run Tests"}
+                    {sb.run === "running" ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2" />}
+                    {sb.run === "running" ? "Running..." : "Run Tests"}
                   </Button>
                   <Button
                     variant="ghost"
-                    onClick={() => { setOutput2(null); setRun2("idle"); }}
+                    onClick={() => updateSandbox(sb.id, { output: null, run: "idle" })}
                     className="h-10 hero-text hover:bg-slate-100"
                   >
                     <RotateCcw className="w-4 h-4 mr-2" /> Clear
@@ -464,6 +450,20 @@ function Page() {
                 </div>
               </div>
             </div>
+          </div>
+        ))}
+
+        {/* Always-available add-another button (after first run) */}
+        {run !== "idle" && run !== "running" && (
+          <div className="flex justify-center animate-fade-up">
+            <Button
+              onClick={addSandbox}
+              variant="outline"
+              className="h-10 hero-text border-slate-200 hover:bg-slate-100"
+            >
+              <SplitSquareHorizontal className="w-4 h-4 mr-2" />
+              {sandboxes.length === 0 ? "Split screen — test another code" : "Add another sandbox"}
+            </Button>
           </div>
         )}
       </div>
