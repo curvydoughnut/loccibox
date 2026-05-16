@@ -72,7 +72,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <span className="font-bold tracking-tight text-base sm:text-lg truncate">Locci Box</span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden lg:flex items-center gap-1">
           {nav.map((n) => {
             const active = path === n.to || path.startsWith(n.to + "/");
             return (
@@ -105,7 +105,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <Bell className="w-4 h-4 text-cyan" />
             <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-gradient-orange-red" />
           </button>
-          <div className="hidden md:block text-right max-w-[180px]">
+          <div className="hidden lg:block text-right max-w-[180px]">
             <div className="text-xs text-white/60 truncate">{user?.email}</div>
           </div>
           <button
