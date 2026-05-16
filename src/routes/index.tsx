@@ -100,7 +100,7 @@ function Landing() {
       {/* Hero */}
       <section
         className="mx-auto max-w-[1400px] mt-6 sm:mt-8 rounded-2xl sm:rounded-[28px] px-6 sm:px-10 lg:px-14 py-10 sm:py-14 lg:py-20 grid lg:grid-cols-2 gap-10 lg:gap-12 items-center"
-        style={{ background: "linear-gradient(135deg,#4a5ed8,#6b7fd9)" }}
+        style={{ background: "radial-gradient(ellipse 60% 55% at 55% 50%, rgba(120,170,140,0.55), rgba(120,170,140,0) 65%), linear-gradient(135deg,#4a5ed8,#6b7fd9)" }}
       >
         <div className="space-y-7 animate-fade-up">
           <div
@@ -215,7 +215,7 @@ function Landing() {
           <div
             key={title}
             className="rounded-2xl p-8 min-h-[260px] flex flex-col transition-transform hover:-translate-y-1"
-            style={{ background: "linear-gradient(135deg,#5568d3,#5a8fbf)", boxShadow: "0 8px 24px rgba(15,42,75,0.12)" }}
+            style={{ background: "radial-gradient(ellipse 70% 65% at 55% 50%, rgba(120,170,140,0.55), rgba(120,170,140,0) 70%), linear-gradient(135deg,#4a5ed8,#6b7fd9)", boxShadow: "0 8px 24px rgba(15,42,75,0.12)" }}
           >
             <div
               className="w-12 h-12 rounded-xl flex items-center justify-center mb-6"
@@ -232,7 +232,7 @@ function Landing() {
       {/* Footer */}
       <footer
         className="mx-auto max-w-[1400px] mt-10 mb-6 rounded-2xl px-10 py-8"
-        style={{ background: "linear-gradient(135deg,#4a5ed8,#6b7fd9)" }}
+        style={{ background: "radial-gradient(ellipse 55% 80% at 50% 50%, rgba(120,170,140,0.5), rgba(120,170,140,0) 70%), linear-gradient(135deg,#4a5ed8,#6b7fd9)" }}
       >
         <div className="flex flex-col md:flex-row items-center justify-between gap-5">
           <div className="flex items-center gap-3">
