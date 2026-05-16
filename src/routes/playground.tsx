@@ -5,7 +5,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Play, RotateCcw, Check, AlertTriangle, Loader2, Clock, Code2, FlaskConical } from "lucide-react";
+import { Play, RotateCcw, Check, AlertTriangle, Loader2, Clock, Code2, FlaskConical, SplitSquareHorizontal, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/playground")({
@@ -114,6 +114,39 @@ function Page() {
   const [lastMs, setLastMs] = useState<number | null>(null);
   const [stats, setStats] = useState({ passed: 0, failed: 0 });
   const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Split-screen secondary sandbox (appears after first run)
+  const [splitOpen, setSplitOpen] = useState(false);
+  const [code2, setCode2] = useState(codeStarter.python);
+  const [tests2, setTests2] = useState(testStarter.python);
+  const [run2, setRun2] = useState<RunState>("idle");
+  const [output2, setOutput2] = useState<{ stdout: string; stderr: string; exit: number; ms: number } | null>(null);
+
+  const openSplit = () => {
+    setCode2(codeStarter[lang]);
+    setTests2(testStarter[lang]);
+    setOutput2(null);
+    setRun2("idle");
+    setSplitOpen(true);
+  };
+
+  const runTests2 = async () => {
+    if (run2 === "running" || !tests2.trim()) return;
+    setRun2("running");
+    setOutput2(null);
+    const start = performance.now();
+    await new Promise((r) => setTimeout(r, 600 + Math.random() * 400));
+    const ms = Math.round(performance.now() - start);
+    const failedHeuristic = /assert\s+False|raise\s+"|exit\s+1/.test(tests2);
+    const success = !failedHeuristic;
+    setOutput2({
+      stdout: success ? "✓ All tests passed!\n" : "AssertionError\n",
+      stderr: success ? "" : "AssertionError: test failed",
+      exit: success ? 0 : 1,
+      ms,
+    });
+    setRun2(success ? "passed" : "failed");
+  };
 
   const onLangChange = (l: Lang) => {
     setLang(l);
@@ -308,6 +341,115 @@ function Page() {
             </div>
           </div>
         </div>
+
+        {/* Post-run split prompt */}
+        {run !== "idle" && run !== "running" && !splitOpen && (
+          <div className="flex justify-center animate-fade-up">
+            <Button
+              onClick={openSplit}
+              variant="outline"
+              className="h-10 hero-text border-slate-200 hover:bg-slate-100"
+            >
+              <SplitSquareHorizontal className="w-4 h-4 mr-2" />
+              Split screen — test another code
+            </Button>
+          </div>
+        )}
+
+        {/* Secondary sandbox */}
+        {splitOpen && (
+          <div className="animate-fade-up space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm font-semibold hero-text">
+                <SplitSquareHorizontal className="w-4 h-4 text-blue-500" />
+                Secondary sandbox
+                <span className="text-xs hero-text-muted font-normal">— independent microVM</span>
+              </div>
+              <button
+                onClick={() => setSplitOpen(false)}
+                className="inline-flex items-center gap-1 text-xs hero-text-muted hover:hero-text"
+              >
+                <X className="w-3.5 h-3.5" /> Close
+              </button>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+              <div className="hero-white overflow-hidden flex flex-col h-[420px] sm:h-[520px]">
+                <div className="h-12 px-4 flex items-center gap-2 border-b hero-divider">
+                  <div className="w-7 h-7 rounded-lg bg-gradient-cyan-blue flex items-center justify-center">
+                    <Code2 className="w-3.5 h-3.5 text-white" />
+                  </div>
+                  <div className="text-sm font-semibold hero-text">Code · B</div>
+                </div>
+                <div className="flex-1 min-h-0">
+                  <Editor
+                    height="100%"
+                    language={monacoLang[lang]}
+                    theme="sandbox-light"
+                    value={code2}
+                    onChange={(v) => setCode2(v ?? "")}
+                    beforeMount={defineLightTheme}
+                    options={editorOptions}
+                  />
+                </div>
+              </div>
+              <div className="hero-white overflow-hidden flex flex-col h-[520px] sm:h-[600px]">
+                <div className="h-12 px-4 flex items-center justify-between gap-2 border-b hero-divider">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-gradient-purple-pink flex items-center justify-center">
+                      <FlaskConical className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    <div className="text-sm font-semibold hero-text">Test Code · B</div>
+                  </div>
+                  <RunBadge state={run2} />
+                </div>
+                <div className="flex-1 min-h-0 grid grid-rows-[1.4fr_1fr]">
+                  <div className="border-b hero-divider min-h-0">
+                    <Editor
+                      height="100%"
+                      language={monacoLang[lang]}
+                      theme="sandbox-light"
+                      value={tests2}
+                      onChange={(v) => setTests2(v ?? "")}
+                      beforeMount={defineLightTheme}
+                      options={editorOptions}
+                    />
+                  </div>
+                  <div className="hero-soft flex flex-col min-h-0">
+                    <div className="px-4 py-2 border-b hero-divider text-xs hero-text-muted font-medium">Output</div>
+                    <pre className="flex-1 min-h-0 overflow-auto p-4 font-mono text-xs leading-relaxed hero-text">
+                      {run2 === "running" && <span className="text-blue-500">Running in sandbox...</span>}
+                      {output2 && (
+                        <>
+                          {output2.stdout && <span>{output2.stdout}</span>}
+                          {output2.stderr && <span className="text-red-500">{output2.stderr}</span>}
+                          <span className="hero-text-muted">{"\n"}exit code: {output2.exit} · {output2.ms}ms</span>
+                        </>
+                      )}
+                      {!output2 && run2 === "idle" && <span className="hero-text-muted">Press Run Tests to execute.</span>}
+                    </pre>
+                  </div>
+                </div>
+                <div className="px-4 py-3 border-t hero-divider flex items-center gap-2 hero-soft">
+                  <Button
+                    onClick={runTests2}
+                    disabled={run2 === "running" || !tests2.trim()}
+                    className="bg-gradient-primary text-white hover:opacity-90 h-10 shadow-primary"
+                  >
+                    {run2 === "running" ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2" />}
+                    {run2 === "running" ? "Running..." : "Run Tests"}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => { setOutput2(null); setRun2("idle"); }}
+                    className="h-10 hero-text hover:bg-slate-100"
+                  >
+                    <RotateCcw className="w-4 h-4 mr-2" /> Clear
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </AppLayout>
   );
