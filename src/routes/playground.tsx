@@ -243,7 +243,8 @@ function Page() {
 
   return (
     <AppLayout>
-      <div className="p-4 sm:p-6 lg:p-10 space-y-6 max-w-[1600px] mx-auto w-full">
+      <div className="bg-locci-gradient">
+        <div className="p-4 sm:p-6 lg:p-10 space-y-6 max-w-[1600px] mx-auto w-full">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 animate-fade-up">
           <div>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">Dual Sandbox <span className="text-gradient-primary">Playground</span></h1>
@@ -466,6 +467,7 @@ function Page() {
             </Button>
           </div>
         )}
+        </div>
       </div>
     </AppLayout>
   );
