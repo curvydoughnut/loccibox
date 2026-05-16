@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Play, Save, Share2, Download, FileCode2, Plus, X, Folder, FolderOpen,
-  FileText, Loader2, Terminal, Sparkles, GitBranch, Clock, Cpu, Command,
+  FileText, Loader2, Terminal, Clock, Cpu, Command,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
