@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
 import { AppLayout } from "@/components/AppLayout";
 import { useAuth } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Play, Save, Share2, Download, FileCode2, Plus, X, Folder, FolderOpen,
