@@ -8,7 +8,7 @@ import { FloatingHelp } from "@/components/FloatingHelp";
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, gradient: "bg-gradient-cyan-blue" },
-  { to: "/code", label: "Code Editor", icon: FileCode2, gradient: "bg-gradient-cyan-teal" },
+  { to: "/code", label: "Code", icon: FileCode2, gradient: "bg-gradient-cyan-teal" },
   { to: "/bob", label: "BOB", icon: Bug, gradient: "bg-gradient-primary" },
   { to: "/playground", label: "Playground", icon: Split, gradient: "bg-gradient-purple-pink" },
   { to: "/keys", label: "API Keys", icon: KeyRound, gradient: "bg-gradient-teal-green" },
