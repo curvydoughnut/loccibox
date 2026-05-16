@@ -264,6 +264,7 @@ function Landing() {
           <nav className="flex items-center gap-8 text-sm" style={{ color: "rgba(255,255,255,0.85)" }}>
             <a href="#" className="hover:text-white">Documentation</a>
             <a href="#" className="hover:text-white">System Status</a>
+            <Link to="/faq" className="hover:text-white">FAQ</Link>
             <a href="#" className="hover:text-white">Privacy Policy</a>
           </nav>
 
