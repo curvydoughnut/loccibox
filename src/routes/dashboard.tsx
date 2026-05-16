@@ -120,14 +120,14 @@ function Page() {
           ))}
         </div>
 
-        <div className="hero-white p-4 sm:p-7 animate-fade-up" style={{ animationDelay: "300ms" }}>
+        <div className="bg-locci-gradient rounded-2xl p-4 sm:p-7 animate-fade-up shadow-hero" style={{ animationDelay: "300ms" }}>
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h2 className="text-lg sm:text-xl font-bold hero-text">Sandbox Runs</h2>
-              <p className="text-sm hero-text-muted mt-0.5">Last 7 days</p>
+              <h2 className="text-lg sm:text-xl font-bold text-white">Sandbox Runs</h2>
+              <p className="text-sm text-white/75 mt-0.5">Last 7 days</p>
             </div>
-            <div className="flex items-center gap-2 text-xs hero-text-muted">
-              <span className="w-2 h-2 rounded-full bg-blue-500" /> Executions
+            <div className="flex items-center gap-2 text-xs text-white/75">
+              <span className="w-2 h-2 rounded-full bg-white" /> Executions
             </div>
           </div>
           <div className="h-56 sm:h-72">
@@ -135,20 +135,21 @@ function Page() {
               <AreaChart data={chart} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.5} />
-                    <stop offset="100%" stopColor="#3b82f6" stopOpacity={0.05} />
+                    <stop offset="0%" stopColor="#ffffff" stopOpacity={0.55} />
+                    <stop offset="100%" stopColor="#ffffff" stopOpacity={0.03} />
                   </linearGradient>
                   <linearGradient id="strokeGrad" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#3b82f6" />
-                    <stop offset="100%" stopColor="#8b5cf6" />
+                    <stop offset="0%" stopColor="#ffffff" />
+                    <stop offset="100%" stopColor="#d6ffd9" />
                   </linearGradient>
                 </defs>
-                <CartesianGrid stroke="#e2e8f0" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="day" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                <CartesianGrid stroke="rgba(255,255,255,0.18)" strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="day" stroke="rgba(255,255,255,0.75)" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="rgba(255,255,255,0.75)" fontSize={12} tickLine={false} axisLine={false} />
                 <Tooltip
-                  contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 10, fontSize: 12, boxShadow: "0 8px 24px rgba(0,0,0,0.08)" }}
-                  labelStyle={{ color: "#1e293b", fontWeight: 600 }}
+                  contentStyle={{ background: "rgba(15, 23, 60, 0.92)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 10, fontSize: 12, color: "#fff", boxShadow: "0 8px 24px rgba(0,0,0,0.25)" }}
+                  labelStyle={{ color: "#fff", fontWeight: 600 }}
+                  itemStyle={{ color: "#fff" }}
                 />
                 <Area type="monotone" dataKey="runs" stroke="url(#strokeGrad)" strokeWidth={3} fill="url(#g1)" />
               </AreaChart>
