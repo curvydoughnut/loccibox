@@ -14,7 +14,9 @@ import { Route as KeysRouteImport } from './routes/keys'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CodeRouteImport } from './routes/code'
+import { Route as BobRouteImport } from './routes/bob'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BobThreadIdRouteImport } from './routes/bob.$threadId'
 import { Route as ApiBobRouteImport } from './routes/api/bob'
 
 const PlaygroundRoute = PlaygroundRouteImport.update({
@@ -42,10 +44,20 @@ const CodeRoute = CodeRouteImport.update({
   path: '/code',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BobRoute = BobRouteImport.update({
+  id: '/bob',
+  path: '/bob',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const BobThreadIdRoute = BobThreadIdRouteImport.update({
+  id: '/$threadId',
+  path: '/$threadId',
+  getParentRoute: () => BobRoute,
 } as any)
 const ApiBobRoute = ApiBobRouteImport.update({
   id: '/api/bob',
@@ -55,64 +67,77 @@ const ApiBobRoute = ApiBobRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/bob': typeof BobRouteWithChildren
   '/code': typeof CodeRoute
   '/dashboard': typeof DashboardRoute
   '/docs': typeof DocsRoute
   '/keys': typeof KeysRoute
   '/playground': typeof PlaygroundRoute
   '/api/bob': typeof ApiBobRoute
+  '/bob/$threadId': typeof BobThreadIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/bob': typeof BobRouteWithChildren
   '/code': typeof CodeRoute
   '/dashboard': typeof DashboardRoute
   '/docs': typeof DocsRoute
   '/keys': typeof KeysRoute
   '/playground': typeof PlaygroundRoute
   '/api/bob': typeof ApiBobRoute
+  '/bob/$threadId': typeof BobThreadIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/bob': typeof BobRouteWithChildren
   '/code': typeof CodeRoute
   '/dashboard': typeof DashboardRoute
   '/docs': typeof DocsRoute
   '/keys': typeof KeysRoute
   '/playground': typeof PlaygroundRoute
   '/api/bob': typeof ApiBobRoute
+  '/bob/$threadId': typeof BobThreadIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/bob'
     | '/code'
     | '/dashboard'
     | '/docs'
     | '/keys'
     | '/playground'
     | '/api/bob'
+    | '/bob/$threadId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/bob'
     | '/code'
     | '/dashboard'
     | '/docs'
     | '/keys'
     | '/playground'
     | '/api/bob'
+    | '/bob/$threadId'
   id:
     | '__root__'
     | '/'
+    | '/bob'
     | '/code'
     | '/dashboard'
     | '/docs'
     | '/keys'
     | '/playground'
     | '/api/bob'
+    | '/bob/$threadId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BobRoute: typeof BobRouteWithChildren
   CodeRoute: typeof CodeRoute
   DashboardRoute: typeof DashboardRoute
   DocsRoute: typeof DocsRoute
@@ -158,12 +183,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bob': {
+      id: '/bob'
+      path: '/bob'
+      fullPath: '/bob'
+      preLoaderRoute: typeof BobRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/bob/$threadId': {
+      id: '/bob/$threadId'
+      path: '/$threadId'
+      fullPath: '/bob/$threadId'
+      preLoaderRoute: typeof BobThreadIdRouteImport
+      parentRoute: typeof BobRoute
     }
     '/api/bob': {
       id: '/api/bob'
@@ -175,8 +214,19 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface BobRouteChildren {
+  BobThreadIdRoute: typeof BobThreadIdRoute
+}
+
+const BobRouteChildren: BobRouteChildren = {
+  BobThreadIdRoute: BobThreadIdRoute,
+}
+
+const BobRouteWithChildren = BobRoute._addFileChildren(BobRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BobRoute: BobRouteWithChildren,
   CodeRoute: CodeRoute,
   DashboardRoute: DashboardRoute,
   DocsRoute: DocsRoute,
