@@ -247,7 +247,7 @@ function Page() {
         <div className="p-4 sm:p-6 lg:p-10 space-y-6 max-w-[1600px] mx-auto w-full">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 animate-fade-up">
           <div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">Dual Sandbox <span className="text-gradient-primary">Playground</span></h1>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight" style={{ color: "#ffffff" }}>Dual Sandbox Playground</h1>
             <p className="text-sm sm:text-base text-white/60 mt-2">Two isolated microVMs — write on the left, test on the right.</p>
           </div>
           <div className="flex items-center gap-2">
