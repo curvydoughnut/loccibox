@@ -1,8 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
-import { Boxes, ArrowRight, BookOpen, Layers, Shield, Server, Mail, Lock, Loader2 } from "lucide-react";
-import { SiGithub, SiX } from "@icons-pack/react-simple-icons";
+import { Boxes, ArrowRight, BookOpen, Layers, Shield, Server, Mail, Lock, Loader2, Github, Twitter } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
@@ -237,10 +236,10 @@ function Landing() {
 
           <div className="flex items-center gap-3">
             <a href="#" className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.18)" }}>
-              <SiGithub size={16} color="#fff" />
+              <Github className="w-4 h-4" style={{ color: "#fff" }} />
             </a>
             <a href="#" className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.18)" }}>
-              <SiX size={16} color="#fff" />
+              <Twitter className="w-4 h-4" style={{ color: "#fff" }} />
             </a>
           </div>
         </div>
