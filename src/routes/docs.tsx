@@ -1,8 +1,8 @@
 import { createFileRoute, Navigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { useAuth } from "@/lib/auth";
-import { Play, BookOpen, Lock, Split, Code2, Copy } from "lucide-react";
+import { Play, BookOpen, Lock, Split, Code2, Copy, Upload, FolderPlus, Folder, FileText, Trash2, FileUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ export const Route = createFileRoute("/docs")({
 });
 
 const sections = [
+  { id: "my-docs", label: "My Documents", icon: FileText, gradient: "bg-gradient-primary" },
   { id: "quickstart", label: "Quick Start", icon: Play, gradient: "bg-gradient-cyan-blue" },
   { id: "api", label: "API Reference", icon: BookOpen, gradient: "bg-gradient-purple-pink" },
   { id: "auth", label: "Authentication", icon: Lock, gradient: "bg-gradient-cyan-teal" },
@@ -37,7 +38,42 @@ function Block({ code, lang }: { code: string; lang?: string }) {
 function Page() {
   const { user } = useAuth();
   if (!user) return <Navigate to="/" />;
-  const [active, setActive] = useState("quickstart");
+  const [active, setActive] = useState("my-docs");
+
+  type DocItem = { id: string; name: string; kind: "folder" | "file"; size?: number; createdAt: string };
+  const [items, setItems] = useState<DocItem[]>([
+    { id: "d1", name: "Onboarding", kind: "folder", createdAt: "2 days ago" },
+    { id: "d2", name: "API Quickstart.pdf", kind: "file", size: 248_000, createdAt: "1 day ago" },
+    { id: "d3", name: "Sandbox Notes.md", kind: "file", size: 12_400, createdAt: "3h ago" },
+  ]);
+  const fileInput = useRef<HTMLInputElement | null>(null);
+
+  const onUploadClick = () => fileInput.current?.click();
+  const onFilesPicked = (files: FileList | null) => {
+    if (!files || !files.length) return;
+    const added: DocItem[] = Array.from(files).map((f, i) => ({
+      id: `f-${Date.now()}-${i}`,
+      name: f.name,
+      kind: "file",
+      size: f.size,
+      createdAt: "just now",
+    }));
+    setItems((s) => [...added, ...s]);
+    toast.success(`${added.length} file${added.length > 1 ? "s" : ""} uploaded`);
+  };
+  const onNewFolder = () => {
+    const name = window.prompt("Folder name");
+    if (!name?.trim()) return;
+    setItems((s) => [{ id: `fd-${Date.now()}`, name: name.trim(), kind: "folder", createdAt: "just now" }, ...s]);
+    toast.success("Folder created");
+  };
+  const removeItem = (id: string) => setItems((s) => s.filter((x) => x.id !== id));
+  const formatSize = (n?: number) => {
+    if (!n) return "—";
+    if (n < 1024) return `${n} B`;
+    if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
+    return `${(n / 1024 / 1024).toFixed(1)} MB`;
+  };
 
   return (
     <AppLayout>
@@ -67,6 +103,71 @@ function Page() {
         </aside>
 
         <div className="hero-white p-5 sm:p-8 lg:p-12 space-y-10 sm:space-y-14 max-w-none min-w-0">
+          <section id="my-docs" className="space-y-4">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight hero-text">My Documents</h1>
+                <p className="hero-text-muted text-sm mt-1">Upload, organize, and access your sandbox docs.</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  ref={fileInput}
+                  type="file"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => { onFilesPicked(e.target.files); e.target.value = ""; }}
+                />
+                <Button onClick={onUploadClick} className="bg-gradient-primary text-white hover:opacity-90 h-10 shadow-primary">
+                  <Upload className="w-4 h-4 mr-2" /> Upload
+                </Button>
+                <Button onClick={onNewFolder} variant="outline" className="h-10 hero-text border-slate-200 hover:bg-slate-100">
+                  <FolderPlus className="w-4 h-4 mr-2" /> New folder
+                </Button>
+              </div>
+            </div>
+
+            <div
+              onDragOver={(e) => { e.preventDefault(); }}
+              onDrop={(e) => { e.preventDefault(); onFilesPicked(e.dataTransfer.files); }}
+              className="rounded-xl border-2 border-dashed hero-border bg-slate-50/60 px-4 py-6 text-center text-sm hero-text-muted hover:bg-slate-50 transition-colors"
+            >
+              <FileUp className="w-5 h-5 mx-auto mb-1 text-blue-500" />
+              Drag & drop files here, or use the Upload button.
+            </div>
+
+            <div className="rounded-xl border hero-border overflow-hidden bg-white">
+              <div className="grid grid-cols-[1fr_120px_140px_40px] px-4 py-2 text-[11px] uppercase tracking-wider font-semibold hero-text-muted border-b hero-divider bg-slate-50">
+                <div>Name</div>
+                <div>Size</div>
+                <div>Created</div>
+                <div />
+              </div>
+              {items.length === 0 ? (
+                <div className="p-6 text-center text-sm hero-text-muted">No documents yet. Upload one or create a folder.</div>
+              ) : (
+                items.map((it) => (
+                  <div key={it.id} className="grid grid-cols-[1fr_120px_140px_40px] items-center px-4 py-2.5 text-sm hero-text border-b last:border-b-0 hero-divider hover:bg-slate-50">
+                    <div className="flex items-center gap-2 min-w-0">
+                      {it.kind === "folder"
+                        ? <Folder className="w-4 h-4 text-amber-500 shrink-0" />
+                        : <FileText className="w-4 h-4 text-blue-500 shrink-0" />}
+                      <span className="truncate">{it.name}</span>
+                    </div>
+                    <div className="hero-text-muted text-xs">{it.kind === "folder" ? "—" : formatSize(it.size)}</div>
+                    <div className="hero-text-muted text-xs">{it.createdAt}</div>
+                    <button
+                      onClick={() => removeItem(it.id)}
+                      className="w-7 h-7 rounded-md hover:bg-red-50 text-slate-400 hover:text-red-500 flex items-center justify-center"
+                      title="Delete"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+
           <section id="quickstart" className="space-y-4">
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight hero-text">Quick Start</h1>
             <p className="hero-text-muted">Get a sandbox running in under a minute.</p>
