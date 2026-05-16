@@ -183,66 +183,10 @@ function Page() {
 
   return (
     <AppLayout>
-      <div className="p-4 sm:p-6 lg:p-10 space-y-6 max-w-[1600px] mx-auto w-full">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 animate-fade-up">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border bg-gradient-to-r from-purple-500/15 to-pink-500/15 text-purple-300 border-purple-400/30">
-                <Sparkles className="w-3 h-3" /> Cloud IDE
-              </span>
-              <span className="inline-flex items-center gap-1 text-xs text-white/50">
-                <GitBranch className="w-3 h-3" /> main
-              </span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">
-              <span className="text-gradient-primary">Code</span>
-            </h1>
-            <p className="text-sm sm:text-base text-white/60 mt-2">
-              Write, save, and run code in a persistent isolated microVM. Multi-file projects, instant execution.
-            </p>
-          </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <Select value={active.lang} onValueChange={(v) => changeLang(v as Lang)}>
-              <SelectTrigger className="w-36 glass border-white/15 text-white"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="python">Python</SelectItem>
-                <SelectItem value="javascript">JavaScript</SelectItem>
-                <SelectItem value="typescript">TypeScript</SelectItem>
-                <SelectItem value="bash">Bash</SelectItem>
-                <SelectItem value="ruby">Ruby</SelectItem>
-              </SelectContent>
-            </Select>
-            <button
-              onClick={run}
-              disabled={running}
-              title="Run code (⌘/Ctrl + Enter)"
-              aria-label="Run code"
-              className="w-10 h-10 rounded-lg bg-gradient-primary text-white hover:opacity-90 shadow-primary flex items-center justify-center disabled:opacity-60"
-            >
-              {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
-            </button>
-            <button
-              onClick={save}
-              title="Save file (⌘/Ctrl + S)"
-              aria-label="Save file"
-              className="w-10 h-10 rounded-lg glass glass-hover border border-white/15 text-white flex items-center justify-center"
-            >
-              <Save className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setPaletteOpen(true)}
-              title="Command palette (⌘/Ctrl + K)"
-              aria-label="Command palette"
-              className="w-10 h-10 rounded-lg glass glass-hover border border-white/15 text-white flex items-center justify-center"
-            >
-              <Command className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
+      <div className="p-3 sm:p-4 lg:p-6 max-w-[1600px] mx-auto w-full">
 
         {/* IDE shell */}
-        <div className="hero-white overflow-hidden flex flex-col lg:flex-row h-[640px] animate-fade-up" style={{ animationDelay: "100ms" }}>
+        <div className="hero-white overflow-hidden flex flex-col lg:flex-row h-[calc(100vh-9rem)] min-h-[640px] rounded-xl border border-slate-200 shadow-sm animate-fade-up">
           {/* File tree */}
           <aside className="w-full lg:w-60 hero-soft border-b lg:border-b-0 lg:border-r hero-divider flex flex-col">
             <div className="px-4 py-3 border-b hero-divider flex items-center justify-between">
@@ -314,12 +258,38 @@ function Page() {
                 </button>
               ))}
               <div className="flex-1" />
-              <div className="flex items-center gap-1 px-2">
-                <button onClick={share} title="Share file" aria-label="Share file" className="w-8 h-8 rounded-md hero-text hover:bg-slate-100 flex items-center justify-center">
-                  <Share2 className="w-3.5 h-3.5" />
+              <div className="flex items-center gap-1 px-2 shrink-0">
+                <Select value={active.lang} onValueChange={(v) => changeLang(v as Lang)}>
+                  <SelectTrigger className="h-8 w-32 text-xs hero-text border-slate-200 bg-white"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="python">Python</SelectItem>
+                    <SelectItem value="javascript">JavaScript</SelectItem>
+                    <SelectItem value="typescript">TypeScript</SelectItem>
+                    <SelectItem value="bash">Bash</SelectItem>
+                    <SelectItem value="ruby">Ruby</SelectItem>
+                  </SelectContent>
+                </Select>
+                <span className="w-px h-5 bg-slate-200 mx-1" />
+                <button
+                  onClick={run}
+                  disabled={running}
+                  title="Run code (⌘/Ctrl + Enter)"
+                  aria-label="Run code"
+                  className="w-8 h-8 rounded-md text-emerald-600 hover:bg-emerald-50 flex items-center justify-center disabled:opacity-60"
+                >
+                  {running ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
+                </button>
+                <button onClick={save} title="Save file (⌘/Ctrl + S)" aria-label="Save file" className="inline-flex items-center gap-1.5 h-8 px-2 rounded-md hero-text hover:bg-slate-100">
+                  <Save className="w-3.5 h-3.5" /> <span className="text-xs">Save</span>
+                </button>
+                <button onClick={share} title="Share file" aria-label="Share file" className="inline-flex items-center gap-1.5 h-8 px-2 rounded-md hero-text hover:bg-slate-100">
+                  <Share2 className="w-3.5 h-3.5" /> <span className="text-xs">Share</span>
                 </button>
                 <button onClick={download} title="Download file" aria-label="Download file" className="w-8 h-8 rounded-md hero-text hover:bg-slate-100 flex items-center justify-center">
                   <Download className="w-3.5 h-3.5" />
+                </button>
+                <button onClick={() => setPaletteOpen(true)} title="Command palette (⌘/Ctrl + K)" aria-label="Command palette" className="w-8 h-8 rounded-md hero-text hover:bg-slate-100 flex items-center justify-center">
+                  <Command className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
