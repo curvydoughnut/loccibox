@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Code2, KeyRound, BookOpen, LogOut, Boxes, Bell, Github, Twitter, FileCode2, Sparkles, Building2, Split, Bug } from "lucide-react";
+import { LayoutDashboard, Code2, KeyRound, BookOpen, LogOut, Boxes, Bell, Github, Twitter, FileCode2, Sparkles, Building2, Split, Bug, Menu, X } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -18,8 +18,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleLogout = async () => { await logout(); navigate({ to: "/" }); };
+  const handleLogout = async () => { setMenuOpen(false); await logout(); navigate({ to: "/" }); };
 
   return (
     <div className="min-h-screen flex flex-col w-full">
@@ -84,6 +85,14 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </nav>
 
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <button
+            onClick={() => setMenuOpen((v) => !v)}
+            className="lg:hidden w-9 h-9 rounded-full glass glass-hover flex items-center justify-center"
+            aria-label="Toggle navigation"
+            aria-expanded={menuOpen}
+          >
+            {menuOpen ? <X className="w-4 h-4 text-cyan" /> : <Menu className="w-4 h-4 text-cyan" />}
+          </button>
           <button className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full glass glass-hover flex items-center justify-center">
             <Bell className="w-4 h-4 text-cyan" />
             <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-gradient-orange-red" />
@@ -101,36 +110,55 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      {/* Mobile nav strip */}
-      <nav
-        className="lg:hidden sticky top-16 sm:top-20 z-40 border-x-0 border-t-0 px-3 py-2 flex items-center gap-1.5 overflow-x-auto"
-        style={{
-          background: "rgba(255,255,255,0.7)",
-          backdropFilter: "blur(14px) saturate(140%)",
-          WebkitBackdropFilter: "blur(14px) saturate(140%)",
-          borderBottom: "1px solid rgba(224,242,254,0.6)",
-        }}
-      >
-        {nav.map((n) => {
-          const active = path === n.to || path.startsWith(n.to + "/");
-          const Icon = n.icon;
-          return (
-            <Link
-              key={n.to}
-              to={n.to}
-              className={cn(
-                "flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-all shrink-0",
-                active ? "bg-white/10 text-white border border-white/15" : "text-white/60 hover:text-white hover:bg-white/5"
-              )}
+      {/* Mobile dropdown nav */}
+      {menuOpen && (
+        <>
+          <div
+            className="lg:hidden fixed inset-0 z-30 bg-black/30"
+            onClick={() => setMenuOpen(false)}
+            aria-hidden
+          />
+          <nav
+            className="lg:hidden fixed left-3 right-3 top-[4.5rem] sm:top-[5.5rem] z-40 rounded-2xl p-2 space-y-1 shadow-xl"
+            style={{
+              background: "rgba(255,255,255,0.95)",
+              backdropFilter: "blur(18px) saturate(140%)",
+              WebkitBackdropFilter: "blur(18px) saturate(140%)",
+              border: "1px solid rgba(224,242,254,0.8)",
+            }}
+          >
+            {nav.map((n) => {
+              const active = path === n.to || path.startsWith(n.to + "/");
+              const Icon = n.icon;
+              return (
+                <Link
+                  key={n.to}
+                  to={n.to}
+                  onClick={() => setMenuOpen(false)}
+                  className={cn(
+                    "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all",
+                    active ? "bg-primary/10 text-primary" : "text-foreground/80 hover:bg-muted"
+                  )}
+                >
+                  <span className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0", n.gradient)}>
+                    <Icon className="w-4 h-4 text-white" />
+                  </span>
+                  {n.label}
+                </Link>
+              );
+            })}
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground/80 hover:bg-muted transition-all"
             >
-              <span className={cn("w-5 h-5 rounded-md flex items-center justify-center", n.gradient)}>
-                <Icon className="w-3 h-3 text-white" />
+              <span className="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-orange-red shrink-0">
+                <LogOut className="w-4 h-4 text-white" />
               </span>
-              {n.label}
-            </Link>
-          );
-        })}
-      </nav>
+              Sign out
+            </button>
+          </nav>
+        </>
+      )}
 
       <div className="flex-1 flex w-full">
         {/* Sidebar */}
