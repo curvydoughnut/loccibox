@@ -54,83 +54,82 @@
 }
 
 :root {
-  --radius: 0.5rem;
+  --radius: 0.75rem;
 
-  /* Editorial near-black */
-  --background: oklch(0.16 0.005 270);
-  --foreground: oklch(0.96 0.005 270);
+  /* Light blue page */
+  --background: oklch(0.97 0.015 230);
+  --foreground: oklch(0.27 0.05 240);
 
-  /* Flat surfaces (no translucency) */
-  --card: oklch(0.20 0.006 270);
-  --card-foreground: oklch(0.96 0.005 270);
-  --popover: oklch(0.20 0.006 270);
-  --popover-foreground: oklch(0.96 0.005 270);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.27 0.05 240);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.27 0.05 240);
 
-  /* Single restrained accent — warm sand */
-  --primary: oklch(0.86 0.07 85);
-  --primary-foreground: oklch(0.18 0.01 270);
-  --secondary: oklch(0.24 0.006 270);
-  --secondary-foreground: oklch(0.96 0.005 270);
-  --muted: oklch(0.22 0.005 270);
-  --muted-foreground: oklch(0.64 0.01 270);
-  --accent: oklch(0.24 0.006 270);
-  --accent-foreground: oklch(0.96 0.005 270);
-  --destructive: oklch(0.62 0.18 25);
-  --destructive-foreground: oklch(0.98 0.005 270);
-  --border: oklch(1 0 0 / 0.08);
-  --input: oklch(1 0 0 / 0.06);
-  --ring: oklch(0.86 0.07 85);
+  /* Primary = bright accent blue #3b82f6 */
+  --primary: oklch(0.62 0.19 258);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.96 0.02 230);
+  --secondary-foreground: oklch(0.27 0.05 240);
+  --muted: oklch(0.96 0.02 230);
+  --muted-foreground: oklch(0.55 0.03 245);
+  --accent: oklch(0.95 0.03 230);
+  --accent-foreground: oklch(0.27 0.05 240);
+  --destructive: oklch(0.62 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.92 0.03 225);
+  --input: oklch(0.92 0.03 225);
+  --ring: oklch(0.62 0.19 258);
 
-  --success: oklch(0.74 0.13 155);
-  --warning: oklch(0.80 0.12 80);
-  --info: oklch(0.74 0.08 230);
-  --cyan: oklch(0.74 0.06 220);
-  --purple: oklch(0.62 0.08 290);
-  --pink: oklch(0.70 0.10 350);
-  --orange: oklch(0.74 0.12 55);
+  --success: oklch(0.72 0.16 160);
+  --warning: oklch(0.78 0.16 75);
+  --info: oklch(0.62 0.19 258);
+  --cyan: oklch(0.62 0.19 258);
+  --purple: oklch(0.55 0.18 280);
+  --pink: oklch(0.70 0.18 350);
+  --orange: oklch(0.74 0.18 55);
 
-  --chart-1: oklch(0.86 0.07 85);
-  --chart-2: oklch(0.74 0.06 220);
-  --chart-3: oklch(0.74 0.13 155);
-  --chart-4: oklch(0.62 0.08 290);
-  --chart-5: oklch(0.74 0.12 55);
+  --chart-1: oklch(0.62 0.19 258);
+  --chart-2: oklch(0.72 0.16 200);
+  --chart-3: oklch(0.55 0.18 280);
+  --chart-4: oklch(0.72 0.16 160);
+  --chart-5: oklch(0.74 0.18 55);
 
-  --sidebar: oklch(0.18 0.005 270);
-  --sidebar-foreground: oklch(0.96 0.005 270);
-  --sidebar-primary: oklch(0.86 0.07 85);
-  --sidebar-primary-foreground: oklch(0.18 0.01 270);
-  --sidebar-accent: oklch(0.24 0.006 270);
-  --sidebar-accent-foreground: oklch(0.96 0.005 270);
-  --sidebar-border: oklch(1 0 0 / 0.06);
-  --sidebar-ring: oklch(0.86 0.07 85);
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.27 0.05 240);
+  --sidebar-primary: oklch(0.62 0.19 258);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.96 0.02 230);
+  --sidebar-accent-foreground: oklch(0.27 0.05 240);
+  --sidebar-border: oklch(0.92 0.03 225);
+  --sidebar-ring: oklch(0.62 0.19 258);
 
-  /* Kept for back-compat — flattened, no rainbow */
-  --gradient-primary: linear-gradient(135deg, oklch(0.30 0.005 270), oklch(0.22 0.006 270));
-  --gradient-cyan-blue: linear-gradient(135deg, oklch(0.30 0.005 270), oklch(0.22 0.006 270));
-  --gradient-purple-pink: linear-gradient(135deg, oklch(0.30 0.005 270), oklch(0.22 0.006 270));
-  --gradient-teal-green: linear-gradient(135deg, oklch(0.30 0.005 270), oklch(0.22 0.006 270));
-  --gradient-orange-red: linear-gradient(135deg, oklch(0.30 0.005 270), oklch(0.22 0.006 270));
-  --gradient-amber-orange: linear-gradient(135deg, oklch(0.30 0.005 270), oklch(0.22 0.006 270));
-  --gradient-cyan-teal: linear-gradient(135deg, oklch(0.30 0.005 270), oklch(0.22 0.006 270));
-  --gradient-slate-blue: linear-gradient(135deg, oklch(0.30 0.005 270), oklch(0.22 0.006 270));
+  /* Brand gradients — blue/indigo/teal family */
+  --gradient-primary: linear-gradient(135deg, #4a5ed8, #6b7fd9);
+  --gradient-cyan-blue: linear-gradient(135deg, #4a5ed8, #6b7fd9);
+  --gradient-purple-pink: linear-gradient(135deg, #5568d3, #6b7fd9);
+  --gradient-teal-green: linear-gradient(135deg, #5568d3, #5a8fbf);
+  --gradient-orange-red: linear-gradient(135deg, #3b82f6, #2563eb);
+  --gradient-amber-orange: linear-gradient(135deg, #5568d3, #5a8fbf);
+  --gradient-cyan-teal: linear-gradient(135deg, #4a5ed8, #5a8fbf);
+  --gradient-slate-blue: linear-gradient(135deg, #2d4a69, #4a5ed8);
 
-  /* Paper surfaces (warm off-white) */
-  --hero-white: #f7f5f0;
-  --hero-white-soft: #efece5;
-  --hero-text: #1a1a1a;
-  --hero-text-muted: #6b6b6b;
-  --hero-border: #e3dfd5;
-  --hero-divider: #ece8de;
+  /* Hero "paper" surfaces — now light blue tinted white */
+  --hero-white: #ffffff;
+  --hero-white-soft: #f0f7ff;
+  --hero-text: #1a3a52;
+  --hero-text-muted: #64748b;
+  --hero-border: #e0f2fe;
+  --hero-divider: #e0f2fe;
 
-  /* Background base — flat, no blueprint grid */
-  --blueprint-base: #111113;
+  /* Page base */
+  --blueprint-base: #e8f4f9;
   --blueprint-grid: transparent;
   --blueprint-major: transparent;
 
-  --shadow-glass: 0 1px 0 rgba(255,255,255,0.04) inset, 0 1px 2px rgba(0,0,0,0.4);
-  --shadow-glass-hover: 0 1px 0 rgba(255,255,255,0.06) inset, 0 4px 12px rgba(0,0,0,0.45);
-  --shadow-hero: 0 1px 0 rgba(0,0,0,0.04) inset, 0 1px 2px rgba(0,0,0,0.06);
-  --shadow-primary: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-glass: 0 2px 8px rgba(15, 42, 75, 0.06);
+  --shadow-glass-hover: 0 4px 16px rgba(15, 42, 75, 0.10);
+  --shadow-hero: 0 4px 16px rgba(15, 42, 75, 0.08);
+  --shadow-primary: 0 4px 12px rgba(59, 130, 246, 0.30);
 }
 
 .dark { /* same — app is dark-first */ }
@@ -139,7 +138,7 @@
   * { border-color: var(--color-border); }
   html, body {
     background-color: var(--blueprint-base);
-    color: var(--color-foreground);
+    color: #1a3a52;
     font-family: var(--font-sans);
     letter-spacing: -0.005em;
     font-feature-settings: "ss01", "cv11";
@@ -153,8 +152,8 @@
 }
 
 @layer utilities {
-  /* Flattened — no rainbow gradients */
-  .bg-gradient-primary,
+  /* Brand gradients — blue family */
+  .bg-gradient-primary { background-image: var(--gradient-primary); }
   .bg-gradient-cyan-blue,
   .bg-gradient-purple-pink,
   .bg-gradient-teal-green,
@@ -162,35 +161,41 @@
   .bg-gradient-amber-orange,
   .bg-gradient-cyan-teal,
   .bg-gradient-slate-blue {
-    background-image: none;
-    background-color: var(--card);
-    border: 1px solid var(--color-border);
+    background-image: var(--gradient-primary);
+    color: #fff;
   }
+  .bg-gradient-purple-pink { background-image: var(--gradient-purple-pink); }
+  .bg-gradient-teal-green  { background-image: var(--gradient-teal-green); }
+  .bg-gradient-orange-red  { background-image: var(--gradient-orange-red); }
+  .bg-gradient-amber-orange{ background-image: var(--gradient-amber-orange); }
+  .bg-gradient-cyan-teal   { background-image: var(--gradient-cyan-teal); }
+  .bg-gradient-slate-blue  { background-image: var(--gradient-slate-blue); }
 
   .text-gradient-primary,
   .text-gradient-cyan {
-    background-image: none;
-    color: var(--color-foreground);
-    -webkit-background-clip: initial; background-clip: initial;
+    background-image: var(--gradient-primary);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
   }
 
-  /* Restrained "glass" — solid, low-key */
+  /* "Glass" cards on light background — white panels with soft blue border */
   .glass {
-    background: var(--card);
-    border: 1px solid var(--color-border);
+    background: #ffffff;
+    border: 1px solid #e0f2fe;
     box-shadow: var(--shadow-glass);
   }
-  .glass-hover { transition: background-color 150ms ease, border-color 150ms ease; }
+  .glass-hover { transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease; }
   .glass-hover:hover {
-    background: oklch(0.22 0.006 270);
-    border-color: rgba(255,255,255,0.14);
+    background: #f8fbff;
+    border-color: #d0e8f2;
+    box-shadow: var(--shadow-glass-hover);
   }
   .glass-strong {
-    background: oklch(0.22 0.006 270);
-    border: 1px solid var(--color-border);
+    background: #e8f4f9;
+    border: 1px solid #e0f2fe;
   }
 
-  /* Hero white surfaces */
+  /* Hero white surfaces (kept) */
   .hero-white {
     background: var(--hero-white);
     color: var(--hero-text);
@@ -206,6 +211,26 @@
 
   .shadow-primary { box-shadow: var(--shadow-primary); }
   .shadow-hero { box-shadow: var(--shadow-hero); }
+
+  /* On light surfaces, the existing `text-white/70` etc. read poorly.
+     Map them to dark-blue equivalents so existing pages stay legible. */
+  .text-white         { color: #1a3a52 !important; }
+  .text-white\/90     { color: rgba(26, 58, 82, 0.92) !important; }
+  .text-white\/80     { color: rgba(26, 58, 82, 0.85) !important; }
+  .text-white\/70     { color: rgba(26, 58, 82, 0.75) !important; }
+  .text-white\/60     { color: rgba(26, 58, 82, 0.62) !important; }
+  .text-white\/50     { color: rgba(26, 58, 82, 0.50) !important; }
+  .text-white\/40     { color: rgba(26, 58, 82, 0.40) !important; }
+
+  /* But inside gradient surfaces the text really should be white */
+  .bg-gradient-primary .text-white,
+  .bg-gradient-cyan-blue .text-white,
+  .bg-gradient-purple-pink .text-white,
+  .bg-gradient-teal-green .text-white,
+  .bg-gradient-orange-red .text-white,
+  .bg-gradient-amber-orange .text-white,
+  .bg-gradient-cyan-teal .text-white,
+  .bg-gradient-slate-blue .text-white { color: #ffffff !important; }
 }
 
 /* Animations */
