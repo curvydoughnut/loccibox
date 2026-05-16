@@ -162,39 +162,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
       )}
 
       <div className="flex-1 flex w-full">
-        {/* Sidebar */}
-        <aside className="hidden lg:flex w-64 shrink-0 flex-col glass border-y-0 border-l-0 sticky top-20 self-start h-[calc(100vh-5rem)]">
-          <nav className="flex-1 p-4 space-y-1">
-            {nav.map((n) => {
-              const active = path === n.to || path.startsWith(n.to + "/");
-              const Icon = n.icon;
-              return (
-                <Link
-                  key={n.to}
-                  to={n.to}
-                  className={cn(
-                    "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all relative",
-                    active
-                      ? "bg-white/10 text-white"
-                      : "text-white/60 hover:bg-white/5 hover:text-white"
-                  )}
-                >
-                  {active && <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r bg-gradient-cyan-blue" />}
-                  <span className={cn("w-8 h-8 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110", n.gradient)}>
-                    <Icon className="w-4 h-4 text-white" />
-                  </span>
-                  {n.label}
-                </Link>
-              );
-            })}
-          </nav>
-          <div className="p-4 border-t border-white/10">
-            <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-white/70 hover:text-white hover:bg-white/5" onClick={handleLogout}>
-              <LogOut className="w-4 h-4" /> Sign out
-            </Button>
-          </div>
-        </aside>
-
         <main className="flex-1 min-w-0">{children}</main>
       </div>
 
